@@ -3,6 +3,7 @@ from discord.ext import commands
 import game
 import privdata # not in repo for security
 import command_descriptions as cd
+import long_messages as lm
 from classes import *
 
 BOT_PREFIX = ("!", "?")
@@ -25,29 +26,29 @@ class ResBotCommands:
     @commands.command(**cd.new_desc)
     async def new_game(self, ctx):
         if self.game_in_progress:
-            await ctx.send("Game already in progress.")
+            await ctx.send(lm.gameinprog)
         else:
             self.g = game.Game()
             self.game_in_progress = True
-            await ctx.send("New game started! Send '!join' to join the game.")
-            print("New game of The Resistance has been started.")
+            await ctx.send(lm.newgamestarted)
+            print(lm.log_newgame)
 
     @commands.command(**cd.join_desc)
     async def join_game(self, ctx):
         sender = ctx.message.author.name
         if not self.game_in_progress:
-            await ctx.send("There is no game to join. Send '!new' to start a new game.")
+            await ctx.send(lm.nogame)
         elif self.g.has_started:
-            await ctx.send("Game has already started. Please wait for a new game to join.")
+            await ctx.send(lm.gameinprog)
         elif sender in self.g.players:
             await ctx.send("You have already joined this game, %s!" % sender)
         elif len(self.g.players) >= self.g.MAXPLAYERS:
-            await ctx.send("The maximum number of players have already joined. Please wait until next game to play.")
+            await ctx.send(lm.playermax)
         else:
             self.g.add_player(Player(name=sender))
             await ctx.send("Joined! Current players are: " + self.g.list_players_str())
             if len(self.g.players) >= self.g.MINPLAYERS:
-                await ctx.send("There are enough players to begin! When you are ready to start, each player should send '!begin'. Roles will be assigned once everyone is ready.")
+                await ctx.send(lm.enoughplayers)
             print("Player joined game. Player list: " + self.g.list_players_str())
 
 @client.event

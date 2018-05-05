@@ -1,0 +1,6 @@
+newgamestarted = "New game started! Send '!join' to join the game."
+log_newgame = "New game of The Resistance has been started."
+nogame = "There is no game to join. Send '!new' to start a new game."
+gameinprog = "Game already in progress."
+playermax = "The maximum number of players have already joined. Please wait until next game to play."
+enoughplayers = "There are enough players to begin! When you are ready to start, each player should send '!begin'. Roles will be assigned once everyone is ready."
