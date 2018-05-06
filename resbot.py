@@ -33,6 +33,14 @@ class ResBotCommands:
             await ctx.send(lm.newgamestarted)
             print(lm.log_newgame)
 
+    @commands.command(**cd.end_desc)
+    @is_me()
+    async def end(self, ctx):
+        self.g = None
+        self.game_in_progress = False
+        await ctx.send("Game over, fools.")
+        print("Game ended by admin.")
+
     @commands.command(**cd.join_desc)
     async def join_game(self, ctx):
         sender = ctx.message.author.name
@@ -46,10 +54,37 @@ class ResBotCommands:
             await ctx.send(lm.playermax)
         else:
             self.g.add_player(Player(name=sender))
+            self.g.ready_players = [] # unready all players
             await ctx.send("Joined! Current players are: " + self.g.list_players_str())
             if len(self.g.players) >= self.g.MINPLAYERS:
                 await ctx.send(lm.enoughplayers)
             print("Player joined game. Player list: " + self.g.list_players_str())
+
+    @commands.command(**cd.ready_desc)
+    async def ready(self, ctx):
+        user = ctx.message.author
+        if user.name not in self.g.list_players():
+            await user.send("Error: You are not in this game.")
+            print(lm.log_notingame.format(user.name, ctx.message.content))
+        elif user.name in self.g.ready_players:
+            await user.send("You're already ready!")
+            print("User {0} is already ready.".format(user.name))
+        else:
+            self.g.ready_players.append(user.name)
+            if len(self.g.players) < self.g.MINPLAYERS:
+                await ctx.send(lm.notenough)
+            elif self.g.check_all_ready():
+                print("All are ready") # start the game / options
+            else:
+                n, t = len(self.g.ready_players), len(self.g.players)
+                await ctx.send("{0}/{1} players are ready.".format(n, t))
+
+    @commands.command(**cd.status_desc)
+    async def status(self, ctx):
+        if not self.game_in_progress:
+            await ctx.send(lm.nogame)
+        else:
+            await ctx.send(self.g.get_status())
 
 @client.event
 async def on_ready():

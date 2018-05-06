@@ -13,7 +13,6 @@ class Game:
         self.number = None
         self.order = []
 
-
     def add_player(self, player):
         self.players[player.name] = player # overwrites if duplicate name
 
