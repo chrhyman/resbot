@@ -6,7 +6,7 @@ import command_descriptions as cd
 import long_messages as lm
 from classes import *
 
-BOT_PREFIX = ("!", "?")
+BOT_PREFIX = ("!")
 TOKEN = privdata.TOKEN
 ADMIN_ID = privdata.ADMIN_ID # wugs#8508
 
@@ -35,7 +35,7 @@ class ResBotCommands:
 
     @commands.command(**cd.end_desc)
     @is_me()
-    async def end(self, ctx):
+    async def end_game(self, ctx):
         self.g = None
         self.game_in_progress = False
         await ctx.send("Game over, fools.")
@@ -43,34 +43,51 @@ class ResBotCommands:
 
     @commands.command(**cd.join_desc)
     async def join_game(self, ctx):
-        sender = ctx.message.author.name
+        sender = ctx.message.author
         if not self.game_in_progress:
             await ctx.send(lm.nogame)
         elif self.g.has_started:
             await ctx.send(lm.gameinprog)
-        elif sender in self.g.players:
-            await ctx.send("You have already joined this game, %s!" % sender)
+        elif str(sender) in self.g.players:
+            await ctx.send("You already joined this game, %s!" % sender.name)
         elif len(self.g.players) >= self.g.MAXPLAYERS:
             await ctx.send(lm.playermax)
         else:
-            self.g.add_player(Player(name=sender))
+            self.g.add_player(Player(name=str(sender)))
+            self.g.assign_nick(str(sender), sender.name) # strip ID#
             self.g.ready_players = [] # unready all players
             await ctx.send("Joined! Current players are: " + self.g.list_players_str())
             if len(self.g.players) >= self.g.MINPLAYERS:
                 await ctx.send(lm.enoughplayers)
             print("Player joined game. Player list: " + self.g.list_players_str())
 
+    @commands.command(**cd.nick_desc)
+    async def change_nick(self, ctx, *nick_w_spaces):
+        new_nick = " ".join(nick_w_spaces)
+        sender = ctx.message.author
+        if not self.g:
+            pass
+        elif str(sender) not in self.g.players:
+            await sender.send("Error: You are not in this game.")
+            print(lm.log_notingame.format(str(sender), ctx.message.content))
+        elif new_nick in list(self.g.nick_dict.values()):
+            await sender.send("That nickname is already in use.")
+        else:
+            print(self.g.nick_dict)
+            self.g.assign_nick(str(sender), new_nick)
+            await ctx.send("{0} is now '{1}'".format(str(sender), new_nick))
+
     @commands.command(**cd.ready_desc)
     async def ready(self, ctx):
-        user = ctx.message.author
-        if user.name not in self.g.list_players():
-            await user.send("Error: You are not in this game.")
-            print(lm.log_notingame.format(user.name, ctx.message.content))
-        elif user.name in self.g.ready_players:
-            await user.send("You're already ready!")
-            print("User {0} is already ready.".format(user.name))
+        sender = ctx.message.author
+        if str(sender) not in self.g.players:
+            await sender.send("Error: You are not in this game.")
+            print(lm.log_notingame.format(str(sender), ctx.message.content))
+        elif str(sender) in self.g.ready_players:
+            await sender.send("You're already ready!")
+            print("User {0} is already ready.".format(str(sender)))
         else:
-            self.g.ready_players.append(user.name)
+            self.g.ready_players.append(str(sender))
             if len(self.g.players) < self.g.MINPLAYERS:
                 await ctx.send(lm.notenough)
             elif self.g.check_all_ready():

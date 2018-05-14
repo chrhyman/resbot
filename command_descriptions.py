@@ -18,6 +18,7 @@ join_desc = {
 }
 
 kill_desc = {
+    "name":         "kill",
     "brief":        "Kills the bot. Painfully. Admin-only command.",
     "description":  "Kills the bot. Painfully. Admin-only command."
 }
@@ -30,7 +31,12 @@ ready_desc = {
 
 status_desc = {
     "name":         "status",
-    "aliases":      ["s"],
     "brief":        "Gives the current game status.",
     "description":  "Returns the current game status. Depending on the game state, this may return various different types of messages."
+}
+
+nick_desc = {
+    "name":         "nick",
+    "brief":        "Sets a player's own nickname for the duration of the current game.",
+    "description":  "Sets a player's own nickname for the duration of the current game. Prevents two users from having the same nickname."
 }

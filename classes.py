@@ -1,11 +1,11 @@
 from constants import *
 
 # class to handle number of players and quantities of them in game
-class Numbers:
+class Number:
     MINPLAYERS = 5
     MAXPLAYERS = 10
     def __init__(self, players):
-        min, max = Numbers.MINPLAYERS, Numbers.MAXPLAYERS
+        min, max = Number.MINPLAYERS, Number.MAXPLAYERS
         assert min <= players <= max, 'Error: Must have {0}-{1} players.'.format(min, max)
         self.players = players
 

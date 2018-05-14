@@ -1,8 +1,9 @@
-VANRES = 'a member of the resistance'
+VANRES = 'a member of the RESISTANCE'
 MERLIN = 'Merlin'
 PERCIVAL = 'Percival'
 RESROLES = (VANRES, MERLIN, PERCIVAL)
-VANSPY = 'a spy'
+VANSPY = 'a SPY'
+VANROLES = (VANRES, VANSPY)
 ASSASSIN = 'assassin'
 MORGANA = 'Morgana'
 MORDRED = 'Mordred'
