@@ -37,6 +37,9 @@ class Game:
     def check_all_ready(self):
         return set([name for name in self.players]) == set(self.ready_players)
 
+    def unready_all_players(self):
+        self.ready_players = []
+
     def assign_nick(self, full_name, nick_name):
         if full_name not in self.players:
             pass

@@ -55,7 +55,7 @@ class ResBotCommands:
         else:
             self.g.add_player(Player(name=str(sender)))
             self.g.assign_nick(str(sender), sender.name) # strip ID#
-            self.g.ready_players = [] # unready all players
+            self.g.unready_all_players()
             await ctx.send("Joined! Current players are: " + self.g.list_players_str())
             if len(self.g.players) >= self.g.MINPLAYERS:
                 await ctx.send(lm.enoughplayers)
