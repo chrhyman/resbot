@@ -6,3 +6,5 @@ playermax = "The maximum number of players have already joined. Please wait unti
 enoughplayers = "There are enough players to begin! When you are ready to start, each player should send '!ready'. Roles will be assigned once everyone is ready."
 log_notingame = "User {0} used a command without being in the current game. Message: {1}"
 notenough = "There aren't enough players to begin a game."
+listroles = "Playing with the following special roles: "
+readytostart = "All players are ready to begin. Game currently has the following special roles: {0}. Use '!setroles <MPGDO>' to change these roles. Any player may send '!start' to begin the game."

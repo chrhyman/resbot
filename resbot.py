@@ -21,15 +21,13 @@ class ResBotCommands:
     def __init__(self, bot):
         self.bot = bot
         self.g = None # holds Game object when in progress
-        self.game_in_progress = False
 
     @commands.command(**cd.new_desc)
     async def new_game(self, ctx):
-        if self.game_in_progress:
+        if self.g:
             await ctx.send(lm.gameinprog)
         else:
             self.g = game.Game()
-            self.game_in_progress = True
             await ctx.send(lm.newgamestarted)
             print(lm.log_newgame)
 
@@ -37,19 +35,18 @@ class ResBotCommands:
     @is_me()
     async def end_game(self, ctx):
         self.g = None
-        self.game_in_progress = False
         await ctx.send("Game over, fools.")
         print("Game ended by admin.")
 
     @commands.command(**cd.join_desc)
     async def join_game(self, ctx):
         sender = ctx.message.author
-        if not self.game_in_progress:
+        if not self.g:
             await ctx.send(lm.nogame)
         elif self.g.has_started:
             await ctx.send(lm.gameinprog)
         elif str(sender) in self.g.players:
-            await ctx.send("You already joined this game, %s!" % sender.name)
+            await sender.send("You already joined this game, %s!" % sender.name)
         elif len(self.g.players) >= self.g.MAXPLAYERS:
             await ctx.send(lm.playermax)
         else:
@@ -62,8 +59,7 @@ class ResBotCommands:
             print("Player joined game. Player list: " + self.g.list_players_str())
 
     @commands.command(**cd.nick_desc)
-    async def change_nick(self, ctx, *nick_w_spaces):
-        new_nick = " ".join(nick_w_spaces)
+    async def change_nick(self, ctx, *, new_nick):
         sender = ctx.message.author
         if not self.g:
             pass
@@ -80,7 +76,9 @@ class ResBotCommands:
     @commands.command(**cd.ready_desc)
     async def ready(self, ctx):
         sender = ctx.message.author
-        if str(sender) not in self.g.players:
+        if not self.g:
+            pass
+        elif str(sender) not in self.g.players:
             await sender.send("Error: You are not in this game.")
             print(lm.log_notingame.format(str(sender), ctx.message.content))
         elif str(sender) in self.g.ready_players:
@@ -91,14 +89,21 @@ class ResBotCommands:
             if len(self.g.players) < self.g.MINPLAYERS:
                 await ctx.send(lm.notenough)
             elif self.g.check_all_ready():
-                print("All are ready") # start the game / options
+                await ctx.send(lm.readytostart.format(self.g.list_special_roles()))
             else:
                 n, t = len(self.g.ready_players), len(self.g.players)
                 await ctx.send("{0}/{1} players are ready.".format(n, t))
 
+    @commands.command(**cd.setroles_desc) # change "!begin" > "!ready" in !join
+    async def set_roles(self, ctx, *, role_list):
+        if self.g:
+            self.g.interpret_roles([char.lower() for char in role_list
+                                    if char.lower() in "mpgdo"])
+            await ctx.send(lm.listroles + self.g.list_special_roles())
+
     @commands.command(**cd.status_desc)
     async def status(self, ctx):
-        if not self.game_in_progress:
+        if not self.g:
             await ctx.send(lm.nogame)
         else:
             await ctx.send(self.g.get_status())

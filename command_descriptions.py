@@ -40,3 +40,15 @@ nick_desc = {
     "brief":        "Sets a player's own nickname for the duration of the current game.",
     "description":  "Sets a player's own nickname for the duration of the current game. Prevents two users from having the same nickname."
 }
+
+setroles_desc = {
+    "name":         "setroles",
+    "aliases":      ["set_roles", "set-roles"],
+    "brief":        "Marks which roles from The Resistance: Avalon to include in the game",
+    "description":  '''Use the command '!setroles [M|P|G|D|O]' to set flags for:\n
+    * [M]erlin: A member of the Resistance who knows all spies (except Mordred). Also adds an Assassin for the spies\n
+    * [P]ercival: A member of the Resistance who knows who Merlin is. Requires Merlin. Recommend adding Morgana for the spies\n
+    * Mor[G]ana: A spy who looks like Merlin to Percival. Requires Percival and Merlin\n
+    * Mor[D]red: A spy who is invisible to Merlin. Requires Merlin.\n
+    * [O]beron: A spy who is invisible to other spies.'''
+}

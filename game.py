@@ -54,6 +54,23 @@ class Game:
         else:
             return self.nick_dict[full_name]
 
+    def interpret_roles(self, rlist):
+        self.special_roles = []     # reset the list
+        if 'm' in rlist:
+            self.special_roles.extend([MERLIN, ASSASSIN])
+            if 'p' in rlist:        # only use Perc/Mord if you have Merlin
+                self.special_roles.append(PERCIVAL)
+                if 'g' in rlist:    # only use Morgana if you have Perc
+                    self.special_roles.append(MORGANA)
+            if 'd' in rlist:
+                self.special_roles.append(MORDRED)
+        if 'o' in rlist:
+            self.special_roles.append(OBERON)
+
+    def list_special_roles(self):
+        x = ", ".join(self.special_roles)
+        return x if x != '' else "None"
+
     def generate_roles(self):
         '''uses self.special_roles (a list of up to four optional roles)
         and self.number (object that handles the numbers of types of players)
@@ -70,6 +87,7 @@ class Game:
             result = role_swap(result, VANSPY, ASSASSIN)
         if PERCIVAL in self.special_roles:
             result = role_swap(result, VANRES, PERCIVAL)
+        if MORGANA in self.special_roles:
             result = role_swap(result, VANSPY, MORGANA)
         if MORDRED in self.special_roles:
             if VANSPY in result:
@@ -84,6 +102,8 @@ class Game:
             elif ASSASSIN in result and MORDRED in result:
                 result = role_swap(result, MORDRED, MORDASS)
                 result = role_swap(result, ASSASSIN, OBERON)
+            else:
+                pass # don't throw an error, just ignore Oberon
         return result
 
     def start(self): #### IN PROGRESS
