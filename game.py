@@ -10,7 +10,8 @@ class Game:
     MAXPLAYERS = Number.MAXPLAYERS
 
     def __init__(self):
-        self.players = {} # dict of {name#id: <Player object>} who are in the game
+        self.players = {} # dict of {name#id: <Player object>} in the game
+        self.ids = {} # dict of {name#id: ID_number}
         self.has_started = False # set to True when it's too late to join game
         self.ready_players = [] # list of name#id players who are ready to start
         self.number = None # holds the Number object, see classes.Number
@@ -28,14 +29,23 @@ class Game:
     def add_player(self, player):
         self.players[player.name] = player # overwrites if duplicate name
 
+    def link_id(self, user, id):
+        self.ids[user] = id
+
     def list_players(self):
         return [self.swap_names(name) for name in self.players]
 
     def list_players_str(self):
-        return ", ".join(self.list_players())
+        tmp = self.list_players()
+        if tmp == []:
+            return "None"
+        return ", ".join(tmp)
 
     def check_all_ready(self):
         return set([name for name in self.players]) == set(self.ready_players)
+
+    def check_num_players(self):
+        return Game.MINPLAYERS <= len(self.players) <= Game.MAXPLAYERS
 
     def unready_all_players(self):
         self.ready_players = []
@@ -116,7 +126,10 @@ class Game:
         shuffle(self.all_roles)
         for i, player in enumerate(self.order):
             self.players[player].assign_role(self.all_roles[i])
-        # shuffle(self.all_roles) # hide this information
+        shuffle(self.all_roles) # hide the role order info from assignment
+
+    def show_order(self):
+        return ", ".join(self.order)
 
     def get_status(self): #### INCOMPLETE
         '''Returns the game state details at any given point as a string.'''

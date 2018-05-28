@@ -17,6 +17,12 @@ join_desc = {
     "description":  "Sending this message to the bot will join you to a new game or let you know whether one is already in progress. Games must have between 5 and 10 players."
 }
 
+unjoin_desc = {
+    "name":         "unjoin",
+    "brief":        "Unjoins a game you have joined.",
+    "description":  "Sending this message to the bot will unjoin you from a new game if roles have not yet been assigned. If the game has !start'd, it's too late to !unjoin."
+}
+
 kill_desc = {
     "name":         "kill",
     "brief":        "Kills the bot. Painfully. Admin-only command.",
@@ -50,5 +56,12 @@ setroles_desc = {
     * [P]ercival: A member of the Resistance who knows who Merlin is. Requires Merlin. Recommend adding Morgana for the spies\n
     * Mor[G]ana: A spy who looks like Merlin to Percival. Requires Percival and Merlin\n
     * Mor[D]red: A spy who is invisible to Merlin. Requires Merlin.\n
-    * [O]beron: A spy who is invisible to other spies.'''
+    * [O]beron: A spy who is invisible to other spies.\n\n
+    Example: "!setroles MPD" will set flags for a game with Merlin, Assassin, Percival, and Mordred.'''
+}
+
+start_desc = {
+    "name":         "start",
+    "brief":        "Starts the game if all players are ready.",
+    "description":  "Starts the game if all players are ready. Will determine the roles in the game, determine a random turn order, distribute roles, and inform players."
 }
