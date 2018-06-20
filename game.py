@@ -13,7 +13,7 @@ class Game:
         self.players = {} # dict of {name#id: <Player object>} in the game
         self.ids = {} # dict of {name#id: ID_number}
         self.has_started = False # set to True when it's too late to join game
-        self.ready_players = [] # list of name#id players who are ready to start
+        self.ready_players = [] # list of name#id players ready to start
         self.number = None # holds the Number object, see classes.Number
         self.order = [] # turn order
         self.nick_dict = {} # in-game nicknames
@@ -66,32 +66,32 @@ class Game:
 
     def interpret_roles(self, rlist):
         self.special_roles = []     # reset the list
-        if 'm' in rlist:
+        if 'm' in rlist:            # if you add Merlin you must add Assassin
             self.special_roles.extend([MERLIN, ASSASSIN])
-            if 'p' in rlist:        # only use Perc/Mord if you have Merlin
+            if 'p' in rlist:        # only use Perc if you have Merlin
                 self.special_roles.append(PERCIVAL)
                 if 'g' in rlist:    # only use Morgana if you have Perc
                     self.special_roles.append(MORGANA)
-            if 'd' in rlist:
+            if 'd' in rlist:        # only use Mord if you have Merlin
                 self.special_roles.append(MORDRED)
-        if 'o' in rlist:
+        if 'o' in rlist:            # no restriction on Oberon
             self.special_roles.append(OBERON)
 
     def list_special_roles(self):
         x = ", ".join(self.special_roles)
-        return x if x != '' else "None"
+        return x if x != "" else "None"
 
     def generate_roles(self):
-        '''uses self.special_roles (a list of up to four optional roles)
+        '''uses self.special_roles (a list of up to five optional roles)
         and self.number (object that handles the numbers of types of players)
         to generate a list of all roles in game'''
-        def role_swap(l, search_for, replace_with):
-            for i, val in enumerate(l):
+        def role_swap(lst, search_for, replace_with):
+            for i, val in enumerate(lst):
                 if val == search_for:
-                    l[i] = replace_with
-                    return l # only replace the first instance
-            return -1 # if search_for wasn't found in l
-        result = [VANSPY] * self.number.getSpies() + [VANRES] * self.number.getRes()
+                    lst[i] = replace_with
+                    return lst # only replace the first instance
+            return -1 # if search_for wasn't found in lst
+        result = [VANSPY] * self.number.spies + [VANRES] * self.number.res
         if MERLIN in self.special_roles:
             result = role_swap(result, VANRES, MERLIN)
             result = role_swap(result, VANSPY, ASSASSIN)
