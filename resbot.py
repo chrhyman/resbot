@@ -1,18 +1,18 @@
 from discord.ext import commands
 
 import game
-import privdata # not in repo for security
+import privdata         # not in repo for security, defines TOKEN and ADMIN_IDS
 import command_descriptions as cd
 import long_messages as lm
 from classes import *
 
-BOT_PREFIX = ("!")
+BOT_PREFIX = ("!")              # iterable
 TOKEN = privdata.TOKEN
-ADMIN_IDS = privdata.ADMIN_IDS # list of INTEGER admin IDs (should not be empty)
+ADMIN_IDS = privdata.ADMIN_IDS  # [int] admin IDs for @is_admin()
 
 client = commands.Bot(command_prefix=BOT_PREFIX)
 
-def is_admin(): # decorator check function to verify that sender is ADMIN
+def is_admin():         # decorator check function verifies sender is ADMIN
     def pred(ctx):
         return ctx.message.author.id in ADMIN_IDS
     return commands.check(pred)
@@ -23,10 +23,10 @@ async def err_notingame(ctx):
     await sender.send("Error: You are not in this game.")
     print(lm.log_notingame.format(str(sender), msg))
 
-class ResBotCommands:
+class ResBot:
     def __init__(self, bot):
         self.bot = bot
-        self.g = None # holds Game object when in progress
+        self.g = None       # holds Game object when in progress
 
     @commands.command(**cd.new_desc)
     async def new_game(self, ctx):
@@ -56,9 +56,7 @@ class ResBotCommands:
         elif len(self.g.players) >= self.g.MAXPLAYERS:
             await ctx.send(lm.playermax)
         else:
-            self.g.add_player(Player(name=str(sender)))
-            self.g.link_id(str(sender), sender.id)
-            self.g.assign_nick(str(sender), sender.name) # strip ID#
+            self.g.add_player(sender)   # add to game, link id, assign nick
             self.g.unready_all_players()
             await ctx.send("{0} joined! Current players are: {1}".format(
                 sender.name, self.g.list_players_str()))
@@ -71,8 +69,21 @@ class ResBotCommands:
         sender = ctx.message.author
         if not self.g or str(sender) not in self.g.players:
             pass
-        elif not self.g.has_started:
+        elif self.g.has_started:
+            await sender.send("Cannot unjoin from game in progress.")
+        else:
             del self.g.players[str(sender)]
+            self.g.unready_all_players()
+            await ctx.send("{0} left. Current players are: {1}".format(
+                sender.name, self.g.list_players_str()))
+
+    @commands.command(**cd.unjoin_desc)
+    async def unjoin_game(self, ctx):
+        sender = ctx.message.author
+        if not self.g or str(sender) not in self.g.players:
+            pass
+        elif not self.g.has_started:
+            self.g.remove_player(sender)
             self.g.unready_all_players()
             await ctx.send("{0} left. Current players are: {1}".format(
                 sender.name, self.g.list_players_str()))
@@ -99,17 +110,16 @@ class ResBotCommands:
         if not self.g:
             pass
         elif str(sender) not in self.g.players:
-            await sender.send("Error: You are not in this game.")
-            print(lm.log_notingame.format(str(sender), ctx.message.content))
+            await err_notingame(ctx)
         elif str(sender) in self.g.ready_players:
             await sender.send("You're already ready!")
-            print("User {0} is already ready.".format(str(sender)))
         else:
             self.g.ready_players.append(str(sender))
             if len(self.g.players) < self.g.MINPLAYERS:
                 await ctx.send(lm.notenough)
             elif self.g.check_all_ready():
-                await ctx.send(lm.readytostart.format(self.g.list_special_roles()))
+                await ctx.send(lm.readytostart.format(
+                    self.g.list_special_roles()))
             else:
                 n, t = len(self.g.ready_players), len(self.g.players)
                 await ctx.send("{0}/{1} players are ready.".format(n, t))
@@ -133,10 +143,13 @@ class ResBotCommands:
             for pl in self.g.players:
                 user_obj = self.bot.get_user(self.g.ids[pl])
                 pl_role = str(self.g.players[pl].role)
+                # unable to use bot to PM bot
+                # workaround: if an echobot, then send "secret info" to ctx
                 if pl[:7].lower() == "echobot":
                     await ctx.send(self.g.swap_names(pl) + " is " + pl_role)
                 else:
                     await user_obj.send("You are " + pl_role)
+                # TODO: ADD FUNCTIONALITY FOR OTHER INFORMATION PLAYERS HAVE
         else:
             await ctx.send(lm.notreadytostart)
 
@@ -160,5 +173,5 @@ async def kill(ctx):
     print("Kill command sent by admin %s." % ctx.message.author.name)
     await client.logout()
 
-client.add_cog(ResBotCommands(client))
+client.add_cog(ResBot(client))
 client.run(TOKEN)

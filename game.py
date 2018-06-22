@@ -10,36 +10,52 @@ class Game:
     MAXPLAYERS = Number.MAXPLAYERS
 
     def __init__(self):
-        self.players = {} # dict of {name#id: <Player object>} in the game
-        self.ids = {} # dict of {name#id: ID_number}
-        self.has_started = False # set to True when it's too late to join game
-        self.ready_players = [] # list of name#id players who are ready to start
-        self.number = None # holds the Number object, see classes.Number
-        self.order = [] # turn order
-        self.nick_dict = {} # in-game nicknames
-        self.unique_num = 0 # use .get_unique_num() method to generate a Unique#
-        self.special_roles = []
-        self.all_roles = []
+        self.players = {}           # dict {name#id: <Player obj>} in the game
+        self.ids = {}               # dict of {name#id: ID_number}
+        self.has_started = False    # True when it's too late to join game
+        self.ready_players = []     # list of name#id players ready to start
+        self.number = None          # holds Number object, see classes.Number
+        self.order = []             # turn order
+        self.nick_dict = {}         # in-game nicknames
+        self.unique_num = 0         # use .get_unique_num() to get a unique #
+        self.special_roles = []     # list of Avalon roles in game
+        self.all_roles = []         # list of all roles in game
 
     def get_unique_num(self):
         # always returns a unique number for the current game
         self.unique_num += 1
         return self.unique_num
 
-    def add_player(self, player):
-        self.players[player.name] = player # overwrites if duplicate name
+    def add_player(self, sender):
+        '''Takes a discord.py User obj and:
+        * Adds player to self.players as {name#id: <Player obj>} dict entry
+        * Adds ID# to self.ids as {name#id: Int Discord_Unique_ID} dict entry
+        * Assigns name w/o ID as default nick (e.g. wugs instead of wugs#1234)
+
+        Note: name#id means visible, e.g. wugs#1234, whereas Discord_Unique_ID
+        refers to the internal longform ID number used by Discord. This is used
+        to send PMs to specific users instead of the global chat.'''
+
+        self.players[str(sender)] = Player(name=str(sender))
+        self.ids[str(sender)] = sender.id
+        self.assign_nick(str(sender), sender.name)
+
+    def remove_player(self, sender):
+        if self.has_started:
+            raise GameError("Cannot remove player from game in progress!")
+        del self.players[str(sender)]
+        del self.ids[str(sender)]
+        del self.nick_dict[str(sender)]
 
     def link_id(self, user, id):
         self.ids[user] = id
 
     def list_players(self):
-        return [self.swap_names(name) for name in self.players]
+        return [self.get_nick(name) for name in self.players]
 
     def list_players_str(self):
         tmp = self.list_players()
-        if tmp == []:
-            return "None"
-        return ", ".join(tmp)
+        return "None" if tmp == [] else ", ".join(tmp)
 
     def check_all_ready(self):
         return set([name for name in self.players]) == set(self.ready_players)
@@ -58,7 +74,7 @@ class Game:
         else:
             self.nick_dict[full_name] = nick_name
 
-    def swap_names(self, full_name):
+    def get_nick(self, full_name):
         if full_name not in self.nick_dict:
             return full_name
         else:
@@ -66,32 +82,32 @@ class Game:
 
     def interpret_roles(self, rlist):
         self.special_roles = []     # reset the list
-        if 'm' in rlist:
+        if 'm' in rlist:            # if you add Merlin you must add Assassin
             self.special_roles.extend([MERLIN, ASSASSIN])
-            if 'p' in rlist:        # only use Perc/Mord if you have Merlin
+            if 'p' in rlist:        # only use Perc if you have Merlin
                 self.special_roles.append(PERCIVAL)
                 if 'g' in rlist:    # only use Morgana if you have Perc
                     self.special_roles.append(MORGANA)
-            if 'd' in rlist:
+            if 'd' in rlist:        # only use Mord if you have Merlin
                 self.special_roles.append(MORDRED)
-        if 'o' in rlist:
+        if 'o' in rlist:            # no restriction on Oberon
             self.special_roles.append(OBERON)
 
     def list_special_roles(self):
-        x = ", ".join(self.special_roles)
-        return x if x != '' else "None"
+        tmp = ", ".join(self.special_roles)
+        return tmp if tmp != "" else "None"
 
     def generate_roles(self):
-        '''uses self.special_roles (a list of up to four optional roles)
+        '''uses self.special_roles (a list of up to five optional roles)
         and self.number (object that handles the numbers of types of players)
         to generate a list of all roles in game'''
-        def role_swap(l, search_for, replace_with):
-            for i, val in enumerate(l):
+        def role_swap(lst, search_for, replace_with):
+            for i, val in enumerate(lst):
                 if val == search_for:
-                    l[i] = replace_with
-                    return l # only replace the first instance
-            return -1 # if search_for wasn't found in l
-        result = [VANSPY] * self.number.getSpies() + [VANRES] * self.number.getRes()
+                    lst[i] = replace_with
+                    return lst # only replace the first instance
+            return -1 # if search_for wasn't found in lst
+        result = [VANSPY] * self.number.spies + [VANRES] * self.number.res
         if MERLIN in self.special_roles:
             result = role_swap(result, VANRES, MERLIN)
             result = role_swap(result, VANSPY, ASSASSIN)
