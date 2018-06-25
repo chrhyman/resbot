@@ -142,14 +142,14 @@ class ResBot:
             ctx.send("Player order: " + self.g.show_order())
             for pl in self.g.players:
                 user_obj = self.bot.get_user(self.g.ids[pl])
-                pl_role = str(self.g.players[pl].role)
+                pl_role = self.g.players[pl].role
                 # unable to use bot to PM bot
                 # workaround: if an echobot, then send "secret info" to ctx
                 if pl[:7].lower() == "echobot":
-                    await ctx.send(self.g.swap_names(pl) + " is " + pl_role)
+                    await ctx.send(self.g.get_nick(pl) + " is " + str(pl_role))
                 else:
-                    await user_obj.send("You are " + pl_role)
-                # TODO: ADD FUNCTIONALITY FOR OTHER INFORMATION PLAYERS HAVE
+                    await user_obj.send("New game!")
+                    await self.g.private_info(user_obj, pl_role)
         else:
             await ctx.send(lm.notreadytostart)
 

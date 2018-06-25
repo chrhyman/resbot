@@ -144,6 +144,13 @@ class Game:
             self.players[player].assign_role(self.all_roles[i])
         shuffle(self.all_roles) # hide the role order info from assignment
 
+    async def private_info(self, user, role):
+        '''Asynch function to send each player their relevant private
+        information given their particular role in the game.
+        Takes a discord.py User object and a Role object.'''
+        await user.send("You are " + str(role))
+        # TODO: flesh out this method to provide all possible information
+
     def show_order(self):
         return ", ".join(self.order)
 

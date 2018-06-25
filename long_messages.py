@@ -7,5 +7,5 @@ enoughplayers = "There are enough players to begin! When you are ready to start,
 log_notingame = "User {0} used a command without being in the current game. Message: {1}"
 notenough = "There aren't enough players to begin a game."
 listroles = "Playing with the following special roles: "
-readytostart = "All players are ready to begin. Game currently has the following special roles: {0}. Use '!setroles <MPGDO>' to change these roles. Any player may send '!start' to begin the game."
+readytostart = "All players are ready to begin.\n\nGame currently has the following special roles: {0}. Use '!roles <MPGDO>' to change these roles.\n\nAny player may send '!start' to begin the game."
 notreadytostart = "The game is not ready to begin. Verify that all players are !ready and that the game has a valid number of players."

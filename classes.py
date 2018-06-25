@@ -11,13 +11,13 @@ class Number:
         self.spies = self.get_spies()
         self.res = self.get_res()
 
-    def get_spies(self):     # 1/3 of all players are spies (round up)
+    def get_spies(self):            # 1/3 of all players are spies (round up)
         return -(-self.players//3)
 
-    def get_res(self):       # all players that aren't spies are res
+    def get_res(self):              # all players that aren't spies are res
         return self.players - self.spies
 
-    def team_size(self, mission):     # static from game rules; mission is int
+    def team_size(self, mission):   # static from game rules; mission is int
         if mission == 1:
             if self.players <= 7:   return 2
             else:                   return 3
