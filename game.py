@@ -145,14 +145,35 @@ class Game:
         shuffle(self.all_roles) # hide the role order info from assignment
 
     async def private_info(self, user, role):
-        '''Asynch function to send each player their relevant private
+        '''async function to send each player their relevant private
         information given their particular role in the game.
         Takes a discord.py User object and a Role object.'''
         await user.send("You are " + str(role))
-        # TODO: flesh out this method to provide all possible information
+        if role.can_see_spies:
+            if role.is_res:         # Merlin
+                known_spies = [self.get_nick(pl) for pl in self.players
+                                if self.players[pl].role.spy_seen_by_merl]
+            else:                   # fellow (non-Oberon) spies
+                known_spies = [self.get_nick(pl) for pl in self.players
+                                if self.players[pl].role.spy_seen_by_spies]
+            if len(known_spies) == 0:
+                known_spies = ["None"]
+            await user.send("The following players are SPIES: " +
+                            ", ".join(known_spies))
+        if role.can_see_merl:       # Percival
+            merls = [self.get_nick(pl) for pl in self.players
+                        if self.players[pl].role.looks_like_merl]
+            if len(merls) == 1:     # no Morgana in game
+                await user.send("MERLIN is " + merls[0])
+            elif len(merls) == 2:   # Merlin and Morgana
+                await user.send("MERLIN is either {0} or {1}".format(*merls))
+            else:
+                raise GameError("Invalid number of Merlin(s)/Morgana(s)")
 
-    def show_order(self):
-        return ", ".join(self.order)
+
+
+    def show_order(self, sep=", "):
+        return sep.join([self.get_nick(pl) for pl in self.order])
 
     def get_status(self): #### INCOMPLETE
         '''Returns the game state details at any given point as a string.'''

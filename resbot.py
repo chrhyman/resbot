@@ -139,7 +139,6 @@ class ResBot:
             await err_notingame(ctx)
         elif self.g.check_all_ready() and self.g.check_num_players():
             self.g.start()
-            ctx.send("Player order: " + self.g.show_order())
             for pl in self.g.players:
                 user_obj = self.bot.get_user(self.g.ids[pl])
                 pl_role = self.g.players[pl].role
@@ -147,9 +146,13 @@ class ResBot:
                 # workaround: if an echobot, then send "secret info" to ctx
                 if pl[:7].lower() == "echobot":
                     await ctx.send(self.g.get_nick(pl) + " is " + str(pl_role))
+                    # await self.g.private_info(ctx, pl_role)
                 else:
                     await user_obj.send("New game!")
                     await self.g.private_info(user_obj, pl_role)
+            await ctx.send(lm.sentprivinfo)
+            await ctx.send("Player order —\n" + self.g.show_order(' > '))
+            print("Game started. Order: " + self.g.show_order())
         else:
             await ctx.send(lm.notreadytostart)
 
