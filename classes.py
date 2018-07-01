@@ -97,9 +97,3 @@ class Player:
     def assign_role(self, role):
         assert not self.role, "Role already defined as %s." % self.role
         self.role = Role(role)
-
-class Team:
-    pass
-
-class Vote:
-    pass

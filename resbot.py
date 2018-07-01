@@ -4,7 +4,6 @@ import game
 import privdata         # not in repo for security, defines TOKEN and ADMIN_IDS
 import command_descriptions as cd
 import long_messages as lm
-from classes import *
 
 BOT_PREFIX = ("!")              # iterable
 TOKEN = privdata.TOKEN
@@ -126,7 +125,8 @@ class ResBot:
 
     @commands.command(**cd.setroles_desc)
     async def set_roles(self, ctx, *, role_list):
-        if self.g and str(ctx.message.author) in self.g.players:
+        if (self.g and not self.g.has_started
+            and str(ctx.message.author) in self.g.players):
             self.g.interpret_roles([char.lower() for char in role_list
                                     if char.lower() in "mpgdo"])
             await ctx.send(lm.listroles + self.g.list_special_roles())

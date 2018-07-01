@@ -1,6 +1,6 @@
 from random import shuffle
 from constants import *
-from classes import Number, Role, Player, Team, Vote
+from classes import Number, Role, Player
 
 class GameError(Exception):
     pass
@@ -20,6 +20,7 @@ class Game:
         self.unique_num = 0         # use .get_unique_num() to get a unique #
         self.special_roles = []     # list of Avalon roles in game
         self.all_roles = []         # list of all roles in game
+        self.current_status = 0     # see .get_status() for handler
 
     def get_unique_num(self):
         # always returns a unique number for the current game
@@ -177,7 +178,8 @@ class Game:
 
     def get_status(self): #### INCOMPLETE
         '''Returns the game state details at any given point as a string.'''
-        if not self.has_started:
-            return "Game is waiting for all players to be ready. Current players: %s" % self.list_players_str()
-        elif True: # flesh out as class methods develop
-            return "Not yet implemented"
+        status_dict = {
+            0: "Game has not been started.",
+            1: ""
+        }
+        return status_dict[self.current_status]
