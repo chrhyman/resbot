@@ -1,9 +1,6 @@
 from random import shuffle
 from constants import *
-from classes import Number, Role, Player
-
-class GameError(Exception):
-    pass
+from classes import *
 
 class Game:
     MINPLAYERS = Number.MINPLAYERS
@@ -17,15 +14,11 @@ class Game:
         self.number = None          # holds Number object, see classes.Number
         self.order = []             # turn order
         self.nick_dict = {}         # in-game nicknames
-        self.unique_num = 0         # use .get_unique_num() to get a unique #
         self.special_roles = []     # list of Avalon roles in game
         self.all_roles = []         # list of all roles in game
         self.current_status = 0     # see .get_status() for handler
-
-    def get_unique_num(self):
-        # always returns a unique number for the current game
-        self.unique_num += 1
-        return self.unique_num
+        self.missions = []          # list of Mission objects
+        self.li = 0                 # li = leader index, i.e. next leader
 
     def add_player(self, sender):
         '''Takes a discord.py User obj and:
@@ -48,8 +41,11 @@ class Game:
         del self.ids[str(sender)]
         del self.nick_dict[str(sender)]
 
-    def link_id(self, user, id):
-        self.ids[user] = id
+    def is_player(self, pl):
+        pl_l = pl.lower()
+        full_names = [p.lower() for p in self.players]
+        nick_names = [p.lower() for p in self.nick_dict.values()]
+        return pl_l in full_names or pl_l in nick_names
 
     def list_players(self):
         return [self.get_nick(name) for name in self.players]
@@ -59,7 +55,7 @@ class Game:
         return "None" if tmp == [] else ", ".join(tmp)
 
     def check_all_ready(self):
-        return set([name for name in self.players]) == set(self.ready_players)
+        return set([p for p in self.players]) == set(self.ready_players)
 
     def check_num_players(self):
         return Game.MINPLAYERS <= len(self.players) <= Game.MAXPLAYERS
@@ -70,8 +66,8 @@ class Game:
     def assign_nick(self, full_name, nick_name):
         if full_name not in self.players:
             pass
-        elif nick_name in list(self.nick_dict.values()):
-            self.nick_dict[full_name] = nick_name + str(self.get_unique_num())
+        elif nick_name.lower() in [p.lower() for p in self.nick_dict.values()]:
+            raise GameError("Nickname already in use")
         else:
             self.nick_dict[full_name] = nick_name
 
@@ -95,8 +91,7 @@ class Game:
             self.special_roles.append(OBERON)
 
     def list_special_roles(self):
-        tmp = ", ".join(self.special_roles)
-        return tmp if tmp != "" else "None"
+        return ", ".join(self.special_roles) if self.special_roles else "None"
 
     def generate_roles(self):
         '''uses self.special_roles (a list of up to five optional roles)
@@ -144,6 +139,17 @@ class Game:
         for i, player in enumerate(self.order):
             self.players[player].assign_role(self.all_roles[i])
         shuffle(self.all_roles) # hide the role order info from assignment
+        self.add_mission(1, self.order[self.li])
+
+    def add_mission(self, n, leader):
+        if not (1 <= n <= 5):
+            raise GameError("Invalid mission number: %s" % n)
+        self.missions.append(Mission(n, leader))
+
+    def inc_leader(self):       # after leader takes turn, increment index
+        self.li += 1
+        if self.li >= len(self.players):
+            self.li = 0
 
     async def private_info(self, user, role):
         '''async function to send each player their relevant private
@@ -171,15 +177,19 @@ class Game:
             else:
                 raise GameError("Invalid number of Merlin(s)/Morgana(s)")
 
-
-
     def show_order(self, sep=", "):
         return sep.join([self.get_nick(pl) for pl in self.order])
+
+    def curr_leader(self):
+        return self.missions[-1].rounds[-1].leader
+
+    def show_leader(self):
+        return self.get_nick(self.curr_leader())
 
     def get_status(self): #### INCOMPLETE
         '''Returns the game state details at any given point as a string.'''
         status_dict = {
-            0: "Game has not been started.",
-            1: ""
+            0: "Indeterminate",
+            1: "example other status"
         }
         return status_dict[self.current_status]

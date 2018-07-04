@@ -1,5 +1,11 @@
 from constants import *
 
+class GameError(Exception):
+    '''Exception raised for any data state that represents a contradiction
+    of the game rules for The Resistance. Player interface should error
+    check for these possibilities.'''
+    pass
+
 # handles number of players, spies, resistance, and team sizes/fails needed
 class Number:
     MINPLAYERS = 5
@@ -97,3 +103,35 @@ class Player:
     def assign_role(self, role):
         assert not self.role, "Role already defined as %s." % self.role
         self.role = Role(role)
+
+class Mission:
+    def __init__(self, n, next_leader):
+        assert 1 <= n <= 5, "Mission %s does not exist" % n
+        self.n = n
+        self.rounds = [Round(next_leader)]  # if len(rounds) == 5, it's hammer
+        self.winner = None      # "R" or "S"
+
+    def add_round(self, next_leader):
+        if len(self.rounds) == 5:
+            # hammer
+            return
+        self.rounds.append(Round(next_leader))
+
+class Round:
+    def __init__(self, leader):
+        self.leader = leader
+        self.team = []
+        self.votes = {}         # dict of {<player>: boolean}
+        self.approved = False   # True if team has been approved
+
+    def make_team(self, leader, team, size):
+        if leader != self.leader:
+            raise GameError("Only the leader can create a team")
+        if len(team) != size:
+            raise GameError("Team must be of size %d" % size)
+        self.team = team
+
+    def vote(self, player, verdict):
+        if player in self.votes:
+            raise GameError("%s has already voted" % player)
+        self.votes[player] = verdict

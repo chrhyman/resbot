@@ -66,3 +66,9 @@ start_desc = {
     "brief":        "Starts the game if all players are ready.",
     "description":  "Starts the game if all players are ready. Will determine the roles in the game, determine a random turn order, distribute roles, and inform players."
 }
+
+team_desc = {
+    "name":         "team",
+    "brief":        "Leader-only command to propose a team.",
+    "description":  "Allows the current leader to propose a team. Team must contain the correct number of players according to the rules."
+}

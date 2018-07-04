@@ -96,7 +96,7 @@ class ResBot:
             pass
         elif str(sender) not in self.g.players:
             await err_notingame(ctx)
-        elif new_nick in list(self.g.nick_dict.values()):
+        elif new_nick.lower() in [p.lower() for p in self.g.nick_dict.values()]:
             await sender.send("Nickname '{0}' already in use.".format(new_nick))
         else:
             self.g.assign_nick(str(sender), new_nick)
@@ -145,16 +145,37 @@ class ResBot:
                 # unable to use bot to PM bot
                 # workaround: if an echobot, then send "secret info" to ctx
                 if pl[:7].lower() == "echobot":
-                    await ctx.send(self.g.get_nick(pl) + " is " + str(pl_role))
-                    # await self.g.private_info(ctx, pl_role)
+                    pass
+                    #await ctx.send(self.g.get_nick(pl) + " is " + str(pl_role))
+                    #await self.g.private_info(ctx, pl_role)
                 else:
                     await user_obj.send("New game!")
                     await self.g.private_info(user_obj, pl_role)
             await ctx.send(lm.sentprivinfo)
             await ctx.send("Player order —\n" + self.g.show_order(' > '))
+            await ctx.send(lm.firstleader.format(self.g.show_leader()))
             print("Game started. Order: " + self.g.show_order())
         else:
             await ctx.send(lm.notreadytostart)
+
+    @commands.command(**cd.team_desc)
+    async def make_team(self, ctx, *, inp):
+        sender = ctx.message.author
+        try:
+            leader = self.g.curr_leader()
+        except (IndexError, AttributeError):  # game not started, no Game obj
+            print("No game in progress")
+            return
+        if str(sender) != leader:
+            await sender.send("The current leader is %s" %
+                self.g.get_nick(leader))
+        else:
+            pl_lst = inp.split()
+            not_pls = [p for p in pl_lst if not self.g.is_player(p)]
+            if not_pls:
+                await ctx.send("u goofed, not players: " + ", ".join(not_pls))
+            else:
+                await ctx.send("all good fam")
 
     @commands.command(**cd.status_desc)
     async def status(self, ctx):
