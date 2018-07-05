@@ -180,11 +180,19 @@ class Game:
     def show_order(self, sep=", "):
         return sep.join([self.get_nick(pl) for pl in self.order])
 
+    def curr_round(self):
+        if self.missions:
+            return self.missions[-1].rounds[-1]
+        raise GameError("Game has not yet begun; no mission exists")
+    
     def curr_leader(self):
-        return self.missions[-1].rounds[-1].leader
+        return self.curr_round().leader
 
     def show_leader(self):
         return self.get_nick(self.curr_leader())
+    
+    def need_team(self):
+        return len(self.curr_round().team) == 0
 
     def get_status(self): #### INCOMPLETE
         '''Returns the game state details at any given point as a string.'''
