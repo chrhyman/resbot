@@ -96,6 +96,8 @@ class ResBot:
             pass
         elif str(sender) not in self.g.players:
             await err_notingame(ctx)
+        elif '#' in new_nick:
+            await sender.send("Invalid character in nickname: '#'")
         elif new_nick.lower() in [p.lower() for p in self.g.nick_dict.values()]:
             await sender.send("Nickname '{0}' already in use.".format(new_nick))
         else:
