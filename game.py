@@ -128,7 +128,7 @@ class Game:
                 pass # don't throw an error, just ignore Oberon
         return result
 
-    def start(self): #### IN PROGRESS
+    def start(self):
         self.has_started = True
         self.number = Number(len(self.players))
         self.order = [name for name in self.players] # with ID#
@@ -184,15 +184,30 @@ class Game:
         if self.missions:
             return self.missions[-1].rounds[-1]
         raise GameError("Game has not yet begun; no mission exists")
-    
+
     def curr_leader(self):
         return self.curr_round().leader
 
     def show_leader(self):
         return self.get_nick(self.curr_leader())
-    
+
     def need_team(self):
         return len(self.curr_round().team) == 0
+
+    def assign_team(self, team):
+        team = [p.lower() for p in team]
+        team_full = [k for k, v in self.nick_dict.items()
+                       if k.lower() in team or v.lower() in team]
+        self.curr_round().make_team(team_full)
+
+    def curr_team(self):
+        return self.curr_round().team
+
+    def show_team(self):
+        return ", ".join([self.get_nick(p) for p in self.curr_team()])
+
+    def curr_team_size(self):
+        return self.number.team_size(len(self.missions))
 
     def get_status(self): #### INCOMPLETE
         '''Returns the game state details at any given point as a string.'''

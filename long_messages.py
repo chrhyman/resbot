@@ -11,3 +11,4 @@ readytostart = "All players are ready to begin.\n\nGame currently has the follow
 notreadytostart = "The game is not ready to begin. Verify that all players are !ready and that the game has a valid number of players."
 sentprivinfo = "Each player has been sent their private information."
 firstleader = "The first leader is {0}. Use '!team' to propose a team to go on the first mission."
+proposed = "{0} has proposed the following team: {1}"

@@ -174,10 +174,15 @@ class ResBot:
         else:
             pl_lst = inp.split()
             not_pls = [p for p in pl_lst if not self.g.is_player(p)]
+            goal = self.g.curr_team_size()
             if not_pls:
-                await ctx.send("u goofed, not players: " + ", ".join(not_pls))
+                await ctx.send("Unable to recognize: " + ", ".join(not_pls))
+            elif len(pl_lst) != goal:
+                await ctx.send("Incorrect team size. This mission needs %d team members." % goal)
             else:
-                await ctx.send("all good fam")
+                # pl_lst now only contains player names or nicknames
+                self.g.assign_team(pl_lst)
+                await ctx.send(lm.proposed.format(self.g.get_nick(leader), self.g.show_team()))
 
     @commands.command(**cd.status_desc)
     async def status(self, ctx):

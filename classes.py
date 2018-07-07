@@ -124,11 +124,9 @@ class Round:
         self.votes = {}         # dict of {<player>: boolean}
         self.approved = False   # True if team has been approved
 
-    def make_team(self, leader, team, size):
-        if leader != self.leader:
-            raise GameError("Only the leader can create a team")
-        if len(team) != size:
-            raise GameError("Team must be of size %d" % size)
+    def make_team(self, team):
+        if self.team:
+            raise GameError("Team already defined")
         self.team = team
 
     def vote(self, player, verdict):
