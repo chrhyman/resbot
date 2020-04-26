@@ -22,7 +22,7 @@ async def err_notingame(ctx):
     await sender.send("Error: You are not in this game.")
     print(lm.log_notingame.format(str(sender), msg))
 
-class ResBot:
+class ResBot(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.g = None       # holds Game object when in progress
@@ -196,6 +196,11 @@ async def on_ready():
     print('Logged in as: %s' % client.user.name)
     print('ID#: %d' % client.user.id)
     print('----------')
+
+@client.event
+async def on_message(msg):
+    ctx = await client.get_context(msg)
+    await client.invoke(ctx)
 
 @client.command(**cd.kill_desc)
 @is_admin()
