@@ -51,7 +51,7 @@ class Game:
 
     def assign_team(self, team):
         team_full_names = [k for k, v in self.nick_dict.items()
-                     if k in Caseless(team) or v in Caseless(team)]
+                           if k in Caseless(team) or v in Caseless(team)]
         self.curr_round().make_team(team_full_names)
 
     def check_all_ready(self):
