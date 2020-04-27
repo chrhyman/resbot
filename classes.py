@@ -119,8 +119,8 @@ class Mission:
         self.rounds.append(Round(leader_index))
 
 class Round:
-    def __init__(self, leader):
-        self.leader = leader
+    def __init__(self, leader_index):
+        self.li = leader_index
         self.team = []
         self.votes = {}         # dict of {<player>: boolean}
         self.approved = False   # True if team has been approved

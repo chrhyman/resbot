@@ -115,6 +115,9 @@ TODO:   Allow pre-built named role lists instead of this clunky method.
     def list_special_roles(self):
         return ", ".join(self.special_roles) if self.special_roles else "None"
 
+    def list_all_roles(self):
+        return ", ".join(self.all_roles)
+
     def generate_roles(self):
         '''uses self.special_roles (a list of up to five optional roles)
         and self.number (object that handles the numbers of types of players)
@@ -220,7 +223,7 @@ TODO:   Allow pre-built named role lists instead of this clunky method.
         raise GameError("Game has not yet begun; no mission exists")
 
     def curr_leader(self):
-        return self.curr_round().leader
+        return self.order[self.li]
 
     def show_leader(self):
         return self.get_nick(self.curr_leader())
@@ -247,7 +250,7 @@ TODO:   Allow pre-built named role lists instead of this clunky method.
         '''Returns the game state details at any given point as a string.
         '''
         status_dict = {
-            0: "Indeterminate",
+            0: "Initialized",
             1: "example other status"
         }
         return status_dict[self.current_status]
