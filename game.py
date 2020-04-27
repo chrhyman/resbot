@@ -6,7 +6,8 @@ class Game:
     MINPLAYERS = Number.MINPLAYERS
     MAXPLAYERS = Number.MAXPLAYERS
 
-    def __init__(self):
+    def __init__(self, chan):
+        self.chan = chan            # holds messageable ABC for game in progress
         self.players = {}           # dict {name#id: <Player obj>} in the game
         self.ids = {}               # dict of {name#id: ID_number}
         self.has_started = False    # True when it's too late to join game
@@ -18,7 +19,7 @@ class Game:
         self.all_roles = []         # list of all roles in game
         self.current_status = 0     # see .get_status() for handler
         self.missions = []          # list of Mission objects
-        self.li = 0                 # li = leader index, i.e. next leader
+        self.li = 0                 # leader index, i.e. Game.order[li]
 
     def add_player(self, sender):
         '''Takes a discord.py User obj and:
@@ -28,8 +29,8 @@ class Game:
 
         Note: name#id means visible, e.g. wugs#1234, whereas Discord_Unique_ID
         refers to the internal longform ID number used by Discord. This is used
-        to send PMs to specific users instead of the global chat.'''
-
+        to send PMs to specific users instead of the global chat.
+        '''
         self.players[str(sender)] = Player(name=str(sender))
         self.ids[str(sender)] = sender.id
         self.assign_nick(str(sender), sender.name)
@@ -42,6 +43,19 @@ class Game:
         del self.nick_dict[str(sender)]
 
     def is_player(self, pl):
+        '''Current implementation makes me sad and highlights my design problem
+TODO:
+        Create an object class that at least implements 'in' properly.
+class PlayerList:
+    # init with self.names = names
+    def __contains__(self, name):
+        return name.lower() in [the lists i need to check.lower()'d]
+
+        and then have a Game.attr that is a PlayerList so i can just go
+        not_players = [p for p in pl_list if p not in self.g.playerlist]
+        instead of the current solution of invoking this .is_player() method
+        just to get a Bool. yuck
+        '''
         pl_l = pl.lower()
         full_names = [p.lower() for p in self.players]
         nick_names = [p.lower() for p in self.nick_dict.values()]
@@ -77,17 +91,25 @@ class Game:
         else:
             return self.nick_dict[full_name]
 
-    def interpret_roles(self, rlist):
-        self.special_roles = []     # reset the list
-        if 'm' in rlist:            # if you add Merlin you must add Assassin
+    def interpret_roles(self, role_list):
+        '''Takes a pre-formatted list of characters "mpgdo" (lowercase) and
+        uses the games rules of The Resistance to determine the role list.
+        For example, "pg" and "g" would return no special roles, becuase [m] for
+        Merlin would also be required. That is, "mpg" would properly cause
+        Game.special_roles to == ['Merlin', 'Assassin', 'Percival', 'Morgana']
+
+TODO:   Allow pre-built named role lists instead of this clunky method.
+        '''
+        self.special_roles = []     # reset the game role list
+        if 'm' in role_list:        # if you add Merlin you must add Assassin
             self.special_roles.extend([MERLIN, ASSASSIN])
-            if 'p' in rlist:        # only use Perc if you have Merlin
+            if 'p' in role_list:    # only use Perc if you have Merlin
                 self.special_roles.append(PERCIVAL)
-                if 'g' in rlist:    # only use Morgana if you have Perc
+                if 'g' in role_list:    # only use Morgana if you have Perc
                     self.special_roles.append(MORGANA)
-            if 'd' in rlist:        # only use Mord if you have Merlin
+            if 'd' in role_list:    # only use Mord if you have Merlin
                 self.special_roles.append(MORDRED)
-        if 'o' in rlist:            # no restriction on Oberon
+        if 'o' in role_list:        # no restriction on Oberon
             self.special_roles.append(OBERON)
 
     def list_special_roles(self):
@@ -96,39 +118,49 @@ class Game:
     def generate_roles(self):
         '''uses self.special_roles (a list of up to five optional roles)
         and self.number (object that handles the numbers of types of players)
-        to generate a list of all roles in game'''
+        to generate a list of all roles in game
+        '''
         def role_swap(lst, search_for, replace_with):
+            '''A helper function that replaces the first instance of str
+            search_for in list lst with new value str replace_with and returns
+            the new modified lst. Returns -1 if search_for was not found in lst.
+            '''
             for i, val in enumerate(lst):
                 if val == search_for:
                     lst[i] = replace_with
-                    return lst # only replace the first instance
-            return -1 # if search_for wasn't found in lst
-        result = [VANSPY] * self.number.spies + [VANRES] * self.number.res
+                    return lst
+            return -1
+        roles = [VANSPY] * self.number.spies + [VANRES] * self.number.res
         if MERLIN in self.special_roles:
-            result = role_swap(result, VANRES, MERLIN)
-            result = role_swap(result, VANSPY, ASSASSIN)
+            roles = role_swap(roles, VANRES, MERLIN)
+            roles = role_swap(roles, VANSPY, ASSASSIN)
         if PERCIVAL in self.special_roles:
-            result = role_swap(result, VANRES, PERCIVAL)
+            roles = role_swap(roles, VANRES, PERCIVAL)
         if MORGANA in self.special_roles:
-            result = role_swap(result, VANSPY, MORGANA)
+            roles = role_swap(roles, VANSPY, MORGANA)
         if MORDRED in self.special_roles:
-            if VANSPY in result:
-                result = role_swap(result, VANSPY, MORDRED)
-            elif ASSASSIN in result:
-                result = role_swap(result, ASSASSIN, MORDASS)
+            if VANSPY in roles:
+                roles = role_swap(roles, VANSPY, MORDRED)
+            elif ASSASSIN in roles:
+                roles = role_swap(roles, ASSASSIN, MORDASS)
             else:
                 raise GameError("Invalid roles; wrong number of spies")
         if OBERON in self.special_roles:
-            if VANSPY in result:
-                result = role_swap(result, VANSPY, OBERON)
-            elif ASSASSIN in result and MORDRED in result:
-                result = role_swap(result, MORDRED, MORDASS)
-                result = role_swap(result, ASSASSIN, OBERON)
+            if VANSPY in roles:
+                roles = role_swap(roles, VANSPY, OBERON)
+            elif ASSASSIN in roles and MORDRED in roles:
+                roles = role_swap(roles, MORDRED, MORDASS)
+                roles = role_swap(roles, ASSASSIN, OBERON)
             else:
-                pass # don't throw an error, just ignore Oberon
-        return result
+                print("Oberon role being ignored. Insufficient spies.")
+        return roles
 
     def start(self):
+        '''Pretty self-explanatory. Starts the game, sets flags as such,
+        initiates many starting values for later reference including turn order
+        and assigning roles randomly using the random.shuffle function. Adds
+        Mission 1 to the game, which itself creates Round 1.
+        '''
         self.has_started = True
         self.number = Number(len(self.players))
         self.order = [name for name in self.players] # with ID#
@@ -141,10 +173,11 @@ class Game:
         shuffle(self.all_roles) # hide the role order info from assignment
         self.add_mission(1, self.order[self.li])
 
-    def add_mission(self, n, leader):
+    def add_mission(self, n, leader_index):
         if not (1 <= n <= 5):
             raise GameError("Invalid mission number: %s" % n)
-        self.missions.append(Mission(n, leader))
+        self.missions.append(Mission(n))
+        self.missions[-1].add_round(leader_index)
 
     def inc_leader(self):       # after leader takes turn, increment index
         self.li += 1
@@ -152,21 +185,22 @@ class Game:
             self.li = 0
 
     async def private_info(self, user, role):
-        '''async function to send each player their relevant private
+        '''async coroutine function to send each player their relevant private
         information given their particular role in the game.
-        Takes a discord.py User object and a Role object.'''
+        Takes a discord.py User model and a Role object.
+        '''
         await user.send("You are " + str(role))
         if role.can_see_spies:
             if role.is_res:         # Merlin
                 known_spies = [self.get_nick(pl) for pl in self.players
                                 if self.players[pl].role.spy_seen_by_merl]
-            else:                   # fellow (non-Oberon) spies
+            else:                   # spy seeing fellow (non-Oberon) spies
                 known_spies = [self.get_nick(pl) for pl in self.players
                                 if self.players[pl].role.spy_seen_by_spies]
             if len(known_spies) == 0:
-                known_spies = ["None"]
-            await user.send("The following players are SPIES: " +
-                            ", ".join(known_spies))
+                known_spies = ["Unknown"]
+            await user.send(
+                "The following players are SPIES: " + ", ".join(known_spies))
         if role.can_see_merl:       # Percival
             merls = [self.get_nick(pl) for pl in self.players
                         if self.players[pl].role.looks_like_merl]
@@ -210,7 +244,8 @@ class Game:
         return self.number.team_size(len(self.missions))
 
     def get_status(self): #### INCOMPLETE
-        '''Returns the game state details at any given point as a string.'''
+        '''Returns the game state details at any given point as a string.
+        '''
         status_dict = {
             0: "Indeterminate",
             1: "example other status"

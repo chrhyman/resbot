@@ -3,7 +3,8 @@ from constants import *
 class GameError(Exception):
     '''Exception raised for any data state that represents a contradiction
     of the game rules for The Resistance. Player interface should error
-    check for these possibilities.'''
+    check for these possibilities.
+    '''
     pass
 
 # handles number of players, spies, resistance, and team sizes/fails needed
@@ -45,7 +46,7 @@ class Number:
         else:
             assert False, 'Error: Mission %s does not exist' % str(mission)
 
-    def fails_needed(self, mission):  # mission 4 needs two fails with 7+
+    def fails_needed(self, mission):
         if mission == 4 and self.players >= 7:
             return 2
         else:
@@ -105,17 +106,17 @@ class Player:
         self.role = Role(role)
 
 class Mission:
-    def __init__(self, n, next_leader):
+    def __init__(self, n):
         assert 1 <= n <= 5, "Mission %s does not exist" % n
         self.n = n
-        self.rounds = [Round(next_leader)]  # if len(rounds) == 5, it's hammer
+        self.rounds = []  # if len(rounds) == 5, it's hammer
         self.winner = None      # "R" or "S"
 
-    def add_round(self, next_leader):
+    def add_round(self, leader_index):
         if len(self.rounds) == 5:
             # hammer
             return
-        self.rounds.append(Round(next_leader))
+        self.rounds.append(Round(leader_index))
 
 class Round:
     def __init__(self, leader):
@@ -126,7 +127,7 @@ class Round:
 
     def make_team(self, team):
         if self.team:
-            raise GameError("Team already defined")
+            raise GameError("Team already defined for this Round.")
         self.team = team
 
     def vote(self, player, verdict):
