@@ -198,8 +198,8 @@ async def on_ready():
     print('----------')
 
 @client.event
-async def on_message(msg):
-    ctx = await client.get_context(msg)
+async def on_message(message):
+    ctx = await client.get_context(message)
     await client.invoke(ctx)
 
 @client.command(**cd.kill_desc)
