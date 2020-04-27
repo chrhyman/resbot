@@ -6,7 +6,7 @@ import privdata                 # not in repo for security
 TOKEN = privdata.TOKEN          # type str
 ADMIN_IDS = privdata.ADMIN_IDS  # iterable of int admin IDs for @is_admin()
 
-import command_descriptions as command_desc
+import command_desc
 import long_messages as lm      # TODO: rename this `txt`, use dicts
 
 BOT_PREFIX = ("!")              # iterable
@@ -212,6 +212,8 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    '''Re-implements the on_message event so as to not ignore other bots.
+    '''
     ctx = await client.get_context(message)
     await client.invoke(ctx)
 
