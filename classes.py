@@ -7,6 +7,13 @@ class GameError(Exception):
     '''
     pass
 
+class Caseless:
+    def __init__(self, iter):
+        self.iter = iter
+
+    def __contains__(self, item):
+        return item.casefold() in [i.casefold() for i in self.iter]
+
 # handles number of players, spies, resistance, and team sizes/fails needed
 class Number:
     MINPLAYERS = 5

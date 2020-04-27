@@ -1,6 +1,7 @@
 from discord.ext import commands
 
 import game
+from classes import Caseless
 
 import privdata                 # not in repo for security
 TOKEN = privdata.TOKEN          # type str
@@ -95,8 +96,8 @@ class ResBot(commands.Cog):
             await err_notingame(ctx)
         elif '#' in new_nick:
             await sender.send(txt.nick[0].format('#'))
-        elif new_nick.lower() in [p.lower() for p in self.g.nick_dict.values()]:
-            await sender.send(txt.nick[1].format(new_nick))
+        elif new_nick in Caseless(self.g.nick_dict.values()):
+            await sender.send(txt.nick[1].format(new_nick)
         else:
             self.g.assign_nick(str(sender), new_nick)
             await self.g.chan.send(txt.nick[2].format(str(sender), new_nick))
@@ -152,7 +153,7 @@ class ResBot(commands.Cog):
                 else:
                     await user.send("New game!")
                     await self.g.private_info(user, pl_role)
-            await self.g.chan.send(txt.start[1].format(self.g.list_all_roles())
+            await self.g.chan.send(txt.start[1].format(self.g.list_all_roles()))
             await self.g.chan.send(txt.start[2].format(
                 self.g.show_order(' > ')))
             await self.g.chan.send(txt.start[3].format(self.g.show_leader()))
