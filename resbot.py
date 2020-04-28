@@ -97,7 +97,7 @@ class ResBot(commands.Cog):
         elif '#' in new_nick:
             await sender.send(txt.nick[0].format('#'))
         elif new_nick in Caseless(self.g.nick_dict.values()):
-            await sender.send(txt.nick[1].format(new_nick)
+            await sender.send(txt.nick[1].format(new_nick))
         else:
             self.g.assign_nick(str(sender), new_nick)
             await self.g.chan.send(txt.nick[2].format(str(sender), new_nick))
@@ -153,7 +153,8 @@ class ResBot(commands.Cog):
                 else:
                     await user.send("New game!")
                     await self.g.private_info(user, pl_role)
-            await self.g.chan.send(txt.start[1].format(self.g.list_all_roles()))
+            await self.g.chan.send(txt.start[1].format(
+                self.g.list_roles_verbose()))
             await self.g.chan.send(txt.start[2].format(
                 self.g.show_order(' > ')))
             await self.g.chan.send(txt.start[3].format(self.g.show_leader()))
@@ -174,11 +175,11 @@ class ResBot(commands.Cog):
         else:
             pl_lst = team_list.split()
             not_pls = [p for p in pl_lst if not self.g.is_player(p)]
-            goal = self.g.curr_team_size()
+            size = self.g.curr_team_size()
             if not_pls:
                 await sender.send(txt.team[1].format(", ".join(not_pls)))
-            elif len(pl_lst) != goal:
-                await sender.send(txt.team[2].format(goal))
+            elif len(pl_lst) != size:
+                await sender.send(txt.team[2].format(size, len(pl_lst)))
             else:
                 # pl_lst now only contains player names or nicknames
                 self.g.assign_team(pl_lst)

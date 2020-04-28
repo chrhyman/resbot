@@ -60,13 +60,13 @@ start = {
     0: A_IS_B,
     1: "Each player has been sent their private information. Please note that at this dev stage all EchoBot roles are public. The following roles were assigned this game: {0}", # Game.all_roles
     2: "*Player order* —\n**{0}**", # Game.show_order
-    3: "The first leader is **{0}**. They can use `!team` to propose a team to go on the first mission or `!help team` for more info.", # Game.show_leader
+    3: "The first leader is **{0}**. They can use `!team <names separated by spaces>` to propose a team to go on the first mission or `!help team` for more info.", # Game.show_leader
     4: "The game is not ready to begin. Verify that all players are !ready and that the game has a valid number of players."
 }
 
 team = {
     0: "The current leader is {0}", # Game.get_nick(Game.curr_leader())
     1: "Unable to recognize these list items as players: {0}", # ", ".join(list)
-    2: "Incorrect team size. {0} team members required.",
+    2: "Incorrect team size. {0} team members required but you provided {1}.",
     3: "**Mission {0}, Round {1}:**\nLeader *{2}* has proposed the following team:\n\n{3}" # {0} = Game.missions[-1].n {1} = len(Game.missions[-1].rounds) {2} = Game.show_leader() # {3} = Game.show_team()
 }

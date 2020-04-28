@@ -169,6 +169,34 @@ TODO:   Allow pre-built named role lists instead of this clunky method.
         tmp = self.list_players()
         return "None" if tmp == [] else ", ".join(tmp)
 
+    def list_roles_verbose(self):
+        tmp = []
+        role_order = (MERLIN, PERCIVAL, MORGANA, MORDRED, MORDASS,
+                      ASSASSIN, OBERON, VANRES, VANSPY)
+        for r in role_order:
+            if r in self.all_roles:
+                if r == VANRES:
+                    n = self.all_roles.count(VANRES)
+                    if n == 0:
+                        x = "no other " + VANRES_PL
+                    elif n == 1:
+                        x = VANRES
+                    else:
+                        x = "and {0} ".format(n) + VANRES_PL
+                    tmp.append(x)
+                elif r == VANSPY:
+                    n = self.all_roles.count(VANSPY)
+                    if n == 0:
+                        x = "no other " + VANSPY_PL
+                    elif n == 1:
+                        x = VANSPY
+                    else:
+                        x = "and {0} ".format(n) + VANSPY_PL
+                    tmp.append(x)
+                else:
+                    tmp.append(r)
+        return ", ".join(tmp)
+
     def list_special_roles(self):
         return ", ".join(self.special_roles) if self.special_roles else "None"
 
