@@ -73,3 +73,7 @@ team = {
     4: "You've already proposed a team for this round.",
     5: "All players should now vote for whether you `!approve` or `!reject` this team. You may vote privately but all votes will be made public at the end of the round."
 }
+
+team_vote = {
+    0: "You've already voted!"
+}
