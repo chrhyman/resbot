@@ -58,10 +58,11 @@ roles = {
 
 start = {
     0: A_IS_B,
-    1: "Each player has been sent their private information. Please note that at this dev stage all EchoBot roles are public. The following roles were assigned this game: {0}", # Game.all_roles
+    1: "Each player has been sent their private information. Please note that at this dev stage all EchoBot roles are public.\n\nThe following roles were assigned this game: {0}", # Game.all_roles
     2: "*Player order* —\n**{0}**", # Game.show_order
     3: "The first leader is **{0}**. They can use `!team <names separated by spaces>` to propose a team to go on the first mission or `!help team` for more info.", # Game.show_leader
-    4: "The game is not ready to begin. Verify that all players are !ready and that the game has a valid number of players."
+    4: "The game is not ready to begin. Verify that all players are !ready and that the game has a valid number of players.",
+    5: GAMEINPROG
 }
 
 team = {

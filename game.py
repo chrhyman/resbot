@@ -13,12 +13,12 @@ class Game:
         self.has_started = False    # True when it's too late to join game
         self.ready_players = []     # list of name#id players ready to start
         self.number = None          # holds Number object, see classes.Number
-        self.order = []             # turn order
+        self.order = []             # ordered list for turn order
         self.nick_dict = {}         # in-game nicknames
         self.special_roles = []     # list of Avalon roles in game
         self.all_roles = []         # list of all roles in game
-        self.current_status = 0     # see .get_status() for handler
-        self.missions = []          # list of Mission objects
+        self.current_status = 0     # see Game.get_status() for handler
+        self.missions = []          # ordered list of Mission objects
         self.li = 0                 # leader index, i.e. Game.order[li]
 
     def add_mission(self, n, leader_index):
@@ -175,6 +175,7 @@ TODO:   Allow pre-built named role lists instead of this clunky method.
                       ASSASSIN, OBERON, VANRES, VANSPY)
         for r in role_order:
             if r in self.all_roles:
+                x = r
                 if r == VANRES:
                     n = self.all_roles.count(VANRES)
                     if n == 0:
@@ -182,8 +183,7 @@ TODO:   Allow pre-built named role lists instead of this clunky method.
                     elif n == 1:
                         x = VANRES
                     else:
-                        x = "and {0} ".format(n) + VANRES_PL
-                    tmp.append(x)
+                        x = "{0} ".format(n) + VANRES_PL
                 elif r == VANSPY:
                     n = self.all_roles.count(VANSPY)
                     if n == 0:
@@ -191,11 +191,9 @@ TODO:   Allow pre-built named role lists instead of this clunky method.
                     elif n == 1:
                         x = VANSPY
                     else:
-                        x = "and {0} ".format(n) + VANSPY_PL
-                    tmp.append(x)
-                else:
-                    tmp.append(r)
-        return ", ".join(tmp)
+                        x = "{0} ".format(n) + VANSPY_PL
+                tmp.append(x)
+        return ", ".join(tmp[:-1]) + " and " + tmp[-1]
 
     def list_special_roles(self):
         return ", ".join(self.special_roles) if self.special_roles else "None"
@@ -255,6 +253,8 @@ TODO:   Allow pre-built named role lists instead of this clunky method.
                                 if self.players[pl].role.spy_seen_by_spies]
             if len(known_spies) == 0:
                 known_spies = ["Unknown"]
+            if self.number.spies > len(known_spies):
+                known_spies.append("another unknown player")
             await user.send(
                 "The following players are SPIES: " + ", ".join(known_spies))
         if role.can_see_merl:       # Percival
@@ -265,4 +265,5 @@ TODO:   Allow pre-built named role lists instead of this clunky method.
             elif len(merls) == 2:   # Merlin and Morgana
                 await user.send("MERLIN is either {0} or {1}".format(*merls))
             else:
-                raise GameError("Invalid number of Merlin(s)/Morgana(s)")
+                raise GameError('''Invalid number of Merlin(s)/Morgana(s).
+                    Dumping: {0}'''.format(self.__dict__))

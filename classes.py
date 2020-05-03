@@ -119,6 +119,16 @@ class Mission:
         self.rounds = []  # if len(rounds) == 5, it's hammer
         self.winner = None      # "R" or "S"
 
+    def __str__(self):
+        out = "[Mission: {0}".format(self.n)
+        if len(self.rounds) == 0:
+            for n, r in enumerate(self.rounds):
+                out += "\nRound {0}: {1}".format(n+1, r)
+        if self.winner is not None:
+            out += "\nWinner: {0}".format(self.winner)
+        out += "]"
+        return out
+
     def add_round(self, leader_index):
         if len(self.rounds) == 5:
             # hammer
@@ -131,6 +141,15 @@ class Round:
         self.team = []
         self.votes = {}         # dict of {<player>: boolean}
         self.approved = False   # True if team has been approved
+
+    def __str__(self):
+        out = "(Leader Index: " + str(self.li)
+        if len(self.team) != 0:
+            out += "\nTeam: "
+            out += ", ".join(self.team)
+        out += "\nVotes: " + str(self.votes)
+        out += "\nApproved: {0})".format(self.approved)
+        return out
 
     def make_team(self, team):
         if self.team:

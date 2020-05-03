@@ -51,6 +51,28 @@ class ResBot(commands.Cog):
         self.g = None
         print(txt.log["end"])
 
+    @commands.command(**command_desc.dump)
+    @is_admin()
+    async def dump(self, ctx):
+        if self.g is None:
+            await ctx.send("No game exists.")
+            return
+        out = ["Dumping:", "Chan-{0}".format(repr(self.g.chan)), "Players-"]
+        for pl in self.g.players:
+            if self.g.players[pl].role is not None:
+                out.append(
+                    pl + " role: " + str(self.g.players[pl].role.role))
+            out.append(
+                pl + " id: " + str(self.g.ids[pl]))
+        out.append("Order: " + ", ".join(self.g.order))
+        out.append("Nicknames: " + str(self.g.nick_dict))
+        out.append("All roles: " + ", ".join(self.g.all_roles))
+        out.extend([str(m) for m in self.g.missions])
+        for l in out:
+            await ctx.send(l + "\n")
+        out.append(txt.log["line"])
+        print("\n".join(out))
+
     @commands.command(**command_desc.join)
     async def join(self, ctx):
         sender = ctx.message.author
@@ -138,6 +160,8 @@ class ResBot(commands.Cog):
     async def start(self, ctx):
         if not self.g:
             pass
+        elif self.g.has_started:
+            await ctx.message.author.send(txt.start[5])
         elif str(ctx.message.author) not in self.g.players:
             await err_notingame(ctx)
         elif self.g.check_all_ready() and self.g.check_num_players():

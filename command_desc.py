@@ -11,6 +11,12 @@ end = {
     "description":  "Immediately ends any game currently in progress. Admin only."
 }
 
+dump = {
+    "name":         "dump",
+    "brief":        "Prints a data-dump of the Game object.",
+    "description":  "Prints a Game.__dict__ string for debugging."
+}
+
 join = {
     "name":         "join",
     "brief":        "Joins a game of The Resistance",
