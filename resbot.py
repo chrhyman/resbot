@@ -68,10 +68,10 @@ class ResBot(commands.Cog):
         out.append("Nicknames: " + str(self.g.nick_dict))
         out.append("All roles: " + ", ".join(self.g.all_roles))
         out.extend([str(m) for m in self.g.missions])
+        print("\n".join(out))
         for l in out:
             await ctx.send(l + "\n")
-        out.append(txt.log["line"])
-        print("\n".join(out))
+        print(txt.log["line"])
 
     @commands.command(**command_desc.join)
     async def join(self, ctx):
@@ -196,6 +196,8 @@ class ResBot(commands.Cog):
             return
         if str(sender) != leader:
             await sender.send(txt.team[0].format(self.g.show_leader()))
+        elif not self.g.need_team():
+            await sender.send(txt.team[4])
         else:
             pl_lst = team_list.split()
             not_pls = [p for p in pl_lst if not self.g.is_player(p)]
@@ -207,6 +209,7 @@ class ResBot(commands.Cog):
             else:
                 # pl_lst now only contains player names or nicknames
                 self.g.assign_team(pl_lst)
+                # format the info to display to players
                 mission = self.g.missions[-1].n
                 round = len(self.g.missions[-1].rounds)
                 leader = self.g.show_leader()

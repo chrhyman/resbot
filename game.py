@@ -63,6 +63,11 @@ class Game:
     def curr_leader(self):
         return self.order[self.li]
 
+    def curr_mission(self):
+        if self.missions:
+            return self.missions[-1]
+        raise GameError("Game has not yet begun; no mission exists")
+
     def curr_round(self):
         if self.missions:
             return self.missions[-1].rounds[-1]
@@ -223,6 +228,8 @@ TODO:   Allow pre-built named role lists instead of this clunky method.
         and assigning roles randomly using the random.shuffle function. Adds
         Mission 1 to the game, which itself creates Round 1.
         '''
+        if self.has_started:
+            raise GameError("Game has already started!")
         self.has_started = True
         self.number = Number(len(self.players))
         self.order = [name for name in self.players] # with ID#
@@ -233,7 +240,7 @@ TODO:   Allow pre-built named role lists instead of this clunky method.
         for i, player in enumerate(self.order):
             self.players[player].assign_role(self.all_roles[i])
         shuffle(self.all_roles) # hide the role order info from assignment
-        self.add_mission(1, self.order[self.li])
+        self.add_mission(1, self.li)
 
     def unready_all_players(self):
         self.ready_players = []
