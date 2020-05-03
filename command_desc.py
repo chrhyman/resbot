@@ -78,3 +78,15 @@ team = {
     "description":  '''Allows the current leader to propose a team. Team must contain the correct number of players according to the rules. The player sending the command must be the leader of the current mission's active round. Separate each name by a SPACE and no other characters.\n\n
     Example: `!team Bob Mary Sue` will propose a team of Bob, Mary, and Sue.'''
 }
+
+approve = {
+    "name":         "approve",
+    "brief":        "Votes to approve the proposed team for the mission.",
+    "description":  "Votes to approve the proposed team for the current round of this mission."
+}
+
+reject = {
+    "name":         "reject",
+    "brief":        "Votes to reject the proposed team for the mission.",
+    "description":  "Votes to reject the proposed team for the current round of this mission."
+}

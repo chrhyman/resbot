@@ -20,6 +20,8 @@ class Game:
         self.current_status = 0     # see Game.get_status() for handler
         self.missions = []          # ordered list of Mission objects
         self.li = 0                 # leader index, i.e. Game.order[li]
+        self.need_team_vote = False # True=waiting for team approves/rejects
+        self.has_voted = []         # reusable list for vote checking
 
     def add_mission(self, n, leader_index):
         if not (1 <= n <= 5):
@@ -53,6 +55,7 @@ class Game:
         team_full_names = [k for k, v in self.nick_dict.items()
                            if k in Caseless(team) or v in Caseless(team)]
         self.curr_round().make_team(team_full_names)
+        self.need_team_vote = True
 
     def check_all_ready(self):
         return set([p for p in self.players]) == set(self.ready_players)
