@@ -149,8 +149,8 @@ class ResBot(commands.Cog):
     @commands.command(**command_desc.roles)
     async def roles(self, ctx, *, role_list):
         if (self.g
-                and not self.g.has_started
-                and str(ctx.message.author) in self.g.players):
+        and not self.g.has_started
+        and str(ctx.message.author) in self.g.players):
             proposed = [c.lower() for c in role_list if c.lower() in "mpgdo"]
             self.g.interpret_roles(proposed)
             await self.g.chan.send(
@@ -240,11 +240,35 @@ class ResBot(commands.Cog):
         else:
             cr = self.g.curr_round()
             if name in cr.votes:
-                sender.send(txt.team_vote[0])
+                await sender.send(txt.team_vote[0])
             else:
+                ch = self.g.chan
                 cr.vote(name, verdict)
-                if len(cr.votes) == self.number.players:
-                    pass
+                vs = len(cr.votes)          # votes so far
+                ps = self.g.number.players  # total to wait for
+                if vs == ps:
+                    needed = ps // 2 + 1
+                    tally = 0
+                    for player in cr.votes:
+                        if cr.votes[player]:
+                            tally += 1
+                            bold = ""
+                            if player in cr.team:
+                                bold = "**"
+                            await ch.send(txt.team_vote[2].format(
+                                self.g.get_nick(player), bold, "*approve*"))
+                        else:
+                            bold = ""
+                            if player in cr.team:
+                                bold = "**"
+                            await ch.send(txt.team_vote[2].format(
+                                self.g.get_nick(player), bold, "*reject*"))
+                    if tally >= needed:
+                        pass # approved
+                    else:
+                        pass # rejected
+                else:
+                    await ch.send(txt.team_vote[1].format(vs, ps))
 
     @commands.command(**command_desc.status)
     async def status(self, ctx):

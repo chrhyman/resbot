@@ -75,5 +75,8 @@ team = {
 }
 
 team_vote = {
-    0: "You've already voted!"
+    0: "You've already voted!",
+    1: "{0}/{1} votes received.",
+    2: "{1}{0}{1} voted to {2} the team.", # {1} = "**" if on team to bold name
+    3: ""
 }
