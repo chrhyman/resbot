@@ -125,6 +125,7 @@ class Mission:
         assert 1 <= n <= 5, "Mission %s does not exist" % n
         self.n = n
         self.rounds = []  # if len(rounds) == 5, it's hammer
+        self.approved_team = []
         self.winner = None      # "R" or "S"
 
     def __str__(self):
@@ -141,6 +142,11 @@ class Mission:
             # hammer
             return
         self.rounds.append(Round(leader_index))
+
+    def assign_team(self):
+        cr = self.rounds[-1]
+        if cr.approved:
+            self.approved_team = cr.team
 
 class Round:
     def __init__(self, leader_index):

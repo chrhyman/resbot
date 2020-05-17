@@ -170,6 +170,9 @@ TODO:   Allow pre-built named role lists instead of this clunky method.
     def list_all_roles(self):
         return ", ".join(self.all_roles)
 
+    def list_mission_team(self):
+        return [self.get_nick(name) for name in self.missions[-1].approved_team]
+
     def list_players(self):
         return [self.get_nick(name) for name in self.players]
 
