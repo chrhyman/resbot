@@ -228,7 +228,7 @@ class ResBot(commands.Cog):
         elif not self.g.need_team_vote:
             pass
         else:
-            self.team_vote(True, ctx)
+            await self.team_vote(True, ctx)
 
     @commands.command(**command_desc.reject)
     async def reject(self, ctx):
@@ -239,7 +239,7 @@ class ResBot(commands.Cog):
         elif not self.g.need_team_vote:
             pass
         else:
-            self.team_vote(False, ctx)
+            await self.team_vote(False, ctx)
 
     # not a command; handles the logic for !approve and !reject at once
     async def team_vote(self, verdict, ctx):
