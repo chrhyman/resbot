@@ -71,7 +71,7 @@ team = {
     2: "Incorrect team size. {0} team members required but you provided {1}.",
     3: "**Mission {0}, Round {1}:**\nLeader *{2}* has proposed the following team:\n\n{3}", # {0} = Game.missions[-1].n {1} = len(Game.missions[-1].rounds) {2} = Game.show_leader() # {3} = Game.show_team()
     4: "You've already proposed a team for this round.",
-    5: "All players should now vote for whether you `!approve` or `!reject` this team. You may vote privately but all votes will be made public at the end of the round."
+    5: "All players should now vote for whether you `!approve` or `!reject` this team. It is recommended to vote privately so all votes can be made public simultaneously, at the end of the round."
 }
 
 team_vote = {

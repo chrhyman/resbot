@@ -221,34 +221,30 @@ class ResBot(commands.Cog):
 
     @commands.command(**command_desc.approve)
     async def approve(self, ctx):
-        if not self.g:
-            pass
-        elif str(ctx.message.author) not in self.g.players:
-            pass
-        elif not self.g.need_team_vote:
-            pass
-        else:
-            await self.team_vote(True, ctx)
+        await self.team_vote(True, ctx)
 
     @commands.command(**command_desc.reject)
     async def reject(self, ctx):
-        if not self.g:
-            pass
-        elif str(ctx.message.author) not in self.g.players:
-            pass
-        elif not self.g.need_team_vote:
-            pass
-        else:
-            await self.team_vote(False, ctx)
+        await self.team_vote(False, ctx)
 
     # not a command; handles the logic for !approve and !reject at once
     async def team_vote(self, verdict, ctx):
         sender = ctx.message.author
         name = str(sender)
-        if name in self.g.has_voted:
-            sender.send(txt.team_vote[0])
+        if not self.g:
+            pass
+        elif name not in self.g.players:
+            pass
+        elif not self.g.need_team_vote:
+            pass
         else:
-            pass # TODO
+            cr = self.g.curr_round()
+            if name in cr.votes:
+                sender.send(txt.team_vote[0])
+            else:
+                cr.vote(name, verdict)
+                if len(cr.votes) == self.number.players:
+                    pass
 
     @commands.command(**command_desc.status)
     async def status(self, ctx):

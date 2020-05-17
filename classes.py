@@ -8,14 +8,21 @@ class GameError(Exception):
     pass
 
 class Caseless:
+    '''Allows easy re-implementation of an iterable for checking if an item is
+    in a list without respect to its Case i.e. .casefold()
+    Designed for basically just this structure:
+        string in Caseless([list, of, String, with, CASE]) => bool
+    '''
     def __init__(self, iter):
         self.iter = iter
 
     def __contains__(self, item):
         return item.casefold() in [i.casefold() for i in self.iter]
 
-# handles number of players, spies, resistance, and team sizes/fails needed
 class Number:
+    '''Handles number of players, spies, resistance members, and team sizes, as
+    well as number of fails needed for specific missions in those games.
+    '''
     MINPLAYERS = 5
     MAXPLAYERS = 10
     def __init__(self, players):
@@ -59,8 +66,9 @@ class Number:
         else:
             return 1
 
-# Role object sets appropriate flags when initialized with role type
 class Role:
+    '''Takes a string from the constant ROLELIST and assigns appropriate flags.
+    '''
     def __init__(self, role):
         assert role in ROLELIST, 'Error: Role "%s" does not exist.' % role
         self.role = role
