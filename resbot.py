@@ -270,9 +270,10 @@ class ResBot(commands.Cog):
                         await ch.send(txt.team_vote[3].format(
                             self.g.show_leader(),
                             ", ".join(self.g.list_mission_team())))
-# TODO: tell them what to do next
-# inc_leader() when adding next mission
+# TODO: tell them what to do next (do the mission in PMs)
+# when mission team is approved, inc_leader() after mission success/failure
                     else:
+# inc_leader() and display new leader, .add_round to curr_mission
                         cr.approved = False
                         await ch.send(txt.team_vote[4].format(
                             self.g.show_leader(),

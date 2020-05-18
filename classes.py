@@ -140,8 +140,7 @@ class Mission:
 
     def add_round(self, leader_index):
         if len(self.rounds) == 5:
-            # hammer
-            return
+            raise GameError("Last round was hammer! Can't add Round to Mission")
         self.rounds.append(Round(leader_index))
 
     def assign_team(self):
