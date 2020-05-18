@@ -244,11 +244,10 @@ class ResBot(commands.Cog):
             else:
                 ch = self.g.chan
                 cr.vote(name, verdict)
-                vs = len(cr.votes)          # votes so far
-                ps = self.g.number.players  # total players to wait for
+                vs, ps = len(cr.votes), self.g.number.players
                 if vs == ps:
                     self.g.need_team_vote = False
-                    needed = ps // 2 + 1
+                    needed = self.g.number.maj
                     tally = 0
                     for player in cr.votes:
                         if cr.votes[player]:
@@ -257,13 +256,13 @@ class ResBot(commands.Cog):
                             if player in cr.team:
                                 bold = "**"
                             await ch.send(txt.team_vote[2].format(
-                                self.g.get_nick(player), bold, "*approve*"))
+                                self.g.get_nick(player), bold, "approve"))
                         else:
                             bold = ""
                             if player in cr.team:
                                 bold = "**"
                             await ch.send(txt.team_vote[2].format(
-                                self.g.get_nick(player), bold, "*reject*"))
+                                self.g.get_nick(player), bold, "reject"))
                     if tally >= needed:
                         cr.approved = True
                         cm = self.g.curr_mission()
@@ -278,7 +277,7 @@ class ResBot(commands.Cog):
                         await ch.send(txt.team_vote[4].format(
                             self.g.show_leader(),
                             ", ".join([self.g.get_nick(p) for p in cr.team])))
-                else:
+                else:           # num of votes < number of players
                     await ch.send(txt.team_vote[1].format(vs, ps))
 
     @commands.command(**command_desc.status)

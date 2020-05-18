@@ -77,8 +77,8 @@ team = {
 team_vote = {
     0: "You've already voted!",
     1: "{0}/{1} votes received.",
-    2: "{1}{0}{1} voted to {2} the team.", # {1} = "**" if on team to bold name
-    3: "Leader {0}'s team ({1}) has been approved for the mission!",
-    4: "Leader {0}'s team ({1}) was rejected.",
-    5: "The next leader is **{0}**. They can use `!team <names separated by spaces>` to propose a team to go on the mission or `!help team` for more info."
+    2: "{1}{0}{1} voted to *{2}* the team.", # {1} = "**" if on team to bold name
+    3: "Leader *{0}*'s team (**{1}**) has been approved for the mission!",
+    4: "Leader *{0}*'s team (**{1}**) was rejected.",
+    5: "The next leader is ***{0}***. They can use `!team <names separated by spaces>` to propose a team to go on the mission or `!help team` for more info."
 }

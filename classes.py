@@ -29,6 +29,7 @@ class Number:
         min, max = Number.MINPLAYERS, Number.MAXPLAYERS
         assert min <= players <= max, 'Error: Invalid player count'
         self.players = players
+        self.maj = players // 2 + 1     # required to pass a team vote
         self.spies = self.get_spies()
         self.res = self.get_res()
 
