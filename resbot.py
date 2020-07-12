@@ -1,14 +1,12 @@
 from discord.ext import commands
 
 import game
-from classes import Caseless
+from cls import Caseless
+import cmd_desc, txt
 
 import privdata                 # not in repo for security
 TOKEN = privdata.TOKEN          # type str
 ADMIN_IDS = privdata.ADMIN_IDS  # iterable of int admin IDs for @is_admin()
-
-import command_desc
-import txt
 
 BOT_PREFIX = ("!")              # iterable
 
@@ -30,7 +28,7 @@ class ResBot(commands.Cog):
         self.bot = bot
         self.g = None       # holds Game object when in progress
 
-    @commands.command(**command_desc.new)
+    @commands.command(**cmd_desc.new)
     async def new(self, ctx):
         sender = ctx.message.author
         if self.g:
@@ -42,7 +40,7 @@ class ResBot(commands.Cog):
             await self.g.chan.send(txt.new[2])
             print(txt.log["new"])
 
-    @commands.command(**command_desc.end)
+    @commands.command(**cmd_desc.end)
     @is_admin()
     async def end(self, ctx):
         await ctx.send("Game over, fools.")
@@ -51,7 +49,7 @@ class ResBot(commands.Cog):
         self.g = None
         print(txt.log["end"])
 
-    @commands.command(**command_desc.dump)
+    @commands.command(**cmd_desc.dump)
     @is_admin()
     async def dump(self, ctx):
         if self.g is None:
@@ -73,7 +71,7 @@ class ResBot(commands.Cog):
             await ctx.send(l + "\n")
         print(txt.log["line"])
 
-    @commands.command(**command_desc.join)
+    @commands.command(**cmd_desc.join)
     async def join(self, ctx):
         sender = ctx.message.author
         if not self.g:
@@ -94,7 +92,7 @@ class ResBot(commands.Cog):
             print(txt.log["join"].format(
                 sender.name, self.g.list_players_str()))
 
-    @commands.command(**command_desc.unjoin)
+    @commands.command(**cmd_desc.unjoin)
     async def unjoin(self, ctx):
         sender = ctx.message.author
         if not self.g or str(sender) not in self.g.players:
@@ -109,7 +107,7 @@ class ResBot(commands.Cog):
             print(txt.log["unjoin"].format(
                 sender.name, self.g.list_players_str()))
 
-    @commands.command(**command_desc.nick)
+    @commands.command(**cmd_desc.nick)
     async def nick(self, ctx, *, new_nick):
         sender = ctx.message.author
         if not self.g:
@@ -126,7 +124,7 @@ class ResBot(commands.Cog):
             print(txt.log["nick"].format(str(sender), new_nick))
             print(txt.log["nicks"].format(self.g.nick_dict))
 
-    @commands.command(**command_desc.ready)
+    @commands.command(**cmd_desc.ready)
     async def ready(self, ctx):
         sender = ctx.message.author
         if not self.g:
@@ -146,7 +144,7 @@ class ResBot(commands.Cog):
                 n, t = len(self.g.ready_players), len(self.g.players)
                 await self.g.chan.send(txt.ready[3].format(n, t))
 
-    @commands.command(**command_desc.roles)
+    @commands.command(**cmd_desc.roles)
     async def roles(self, ctx, *, role_list):
         if (self.g
         and not self.g.has_started
@@ -156,7 +154,7 @@ class ResBot(commands.Cog):
             await self.g.chan.send(
                 txt.roles[0].format(self.g.list_special_roles()))
 
-    @commands.command(**command_desc.start)
+    @commands.command(**cmd_desc.start)
     async def start(self, ctx):
         if not self.g:
             pass
@@ -186,7 +184,7 @@ class ResBot(commands.Cog):
         else:
             await self.g.chan.send(txt.start[4])
 
-    @commands.command(**command_desc.team)
+    @commands.command(**cmd_desc.team)
     async def team(self, ctx, *, team_list):
         sender = ctx.message.author
         try:
@@ -219,11 +217,11 @@ class ResBot(commands.Cog):
                 print(txt.log["team"].format(*args))
                 await self.g.chan.send(txt.team[5])
 
-    @commands.command(**command_desc.approve)
+    @commands.command(**cmd_desc.approve)
     async def approve(self, ctx):
         await self.team_vote(True, ctx)
 
-    @commands.command(**command_desc.reject)
+    @commands.command(**cmd_desc.reject)
     async def reject(self, ctx):
         await self.team_vote(False, ctx)
 
@@ -281,7 +279,7 @@ class ResBot(commands.Cog):
                 else:           # num of votes < number of players
                     await ch.send(txt.team_vote[1].format(vs, ps))
 
-    @commands.command(**command_desc.status)
+    @commands.command(**cmd_desc.status)
     async def status(self, ctx):
         if not self.g:
             await ctx.send(txt.log["nogame"]) # incomplete
@@ -302,7 +300,7 @@ async def on_message(message):
     ctx = await client.get_context(message)
     await client.invoke(ctx)
 
-@client.command(**command_desc.kill)
+@client.command(**cmd_desc.kill)
 @is_admin()
 async def kill(ctx):
     await ctx.send("brutal.")

@@ -1,6 +1,7 @@
 from random import shuffle
-from constants import *
-from classes import *
+
+from cls import GameError, Caseless, Number, Role, Player, Mission, Round
+from constants import *     # replace * with explicit list once finalized
 
 class Game:
     MINPLAYERS = Number.MINPLAYERS
