@@ -78,7 +78,7 @@ team_vote = {
     0: "You've already voted!",
     1: "{0}/{1} votes received.",
     2: "{1}{0}{1} voted *{2}*.", # {1} = "**" if on team to bold name, else empty string
-    3: "Leader *{0}'s* team (**{1}**) has been approved for the mission!",
+    3: "Leader *{0}'s* team (**{1}**) has been approved for the mission!\n\nThe mission team has been selected! Each mission team member should now *privately* message their vote: `!succeed` or `!fail`. Once all votes have been submitted, the results of the mission will be displayed here. **Votes will not be made public.**",
     4: "Leader *{0}'s* team (**{1}**) was rejected.",
     5: "The next leader is ***{0}***. They can use `!team <names separated by spaces>` to propose a team to go on the mission or `!help team` for more info.",
     6: "All votes have been received and will now be revealed.",

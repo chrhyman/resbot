@@ -225,6 +225,7 @@ class ResBot(commands.Cog):
         await self.team_vote(False, ctx)
 
     # not a command; handles the logic for !approve and !reject at once
+    # increments leader index
     async def team_vote(self, verdict, ctx):
         sender = ctx.message.author
         name = str(sender)
@@ -268,7 +269,6 @@ class ResBot(commands.Cog):
                             self.g.show_leader(),
                             ", ".join(self.g.list_mission_team())))
                         self.g.inc_leader()
-# TODO: tell them what to do next (mission vote)
                     else:
                         cr.approved = False
                         await ch.send(txt.team_vote[4].format(
