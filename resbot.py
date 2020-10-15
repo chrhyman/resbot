@@ -204,9 +204,8 @@ class ResBot(commands.Cog):
                 await sender.send(txt.team[1].format(", ".join(not_pls)))
             elif len(pl_lst) != size:
                 await sender.send(txt.team[2].format(size, len(pl_lst)))
-            else:
-                # pl_lst now only contains player names or nicknames
-                self.g.assign_team(pl_lst)
+            else:      # pl_lst now only contains player names or nicknames
+                self.g.assign_team(pl_lst)  # sets Game.need_team_vote = True
                 # format the info to display to players
                 mission = self.g.missions[-1].n
                 round = len(self.g.missions[-1].rounds)
@@ -243,31 +242,31 @@ class ResBot(commands.Cog):
                 ch = self.g.chan
                 cr.vote(name, verdict)
                 vs, ps = len(cr.votes), self.g.number.players
-                if vs == ps:
+                if vs < ps:
+                    await ch.send(txt.team_vote[1].format(vs, ps))
+                elif vs == ps:      # done voting for this Round
                     self.g.need_team_vote = False
-                    needed = self.g.number.maj
+                    majority = self.g.number.maj
                     tally = 0
                     for player in cr.votes:
+                        bold = ""
+                        if player in cr.team:
+                            bold = "**"
                         if cr.votes[player]:
                             tally += 1
-                            bold = ""
-                            if player in cr.team:
-                                bold = "**"
                             await ch.send(txt.team_vote[2].format(
                                 self.g.get_nick(player), bold, "approve"))
                         else:
-                            bold = ""
-                            if player in cr.team:
-                                bold = "**"
                             await ch.send(txt.team_vote[2].format(
                                 self.g.get_nick(player), bold, "reject"))
-                    if tally >= needed:
+                    if tally >= majority:
                         cr.approved = True
                         cm = self.g.curr_mission()
                         cm.assign_team()
                         await ch.send(txt.team_vote[3].format(
                             self.g.show_leader(),
                             ", ".join(self.g.list_mission_team())))
+                        self.g.inc_leader()
 # TODO: tell them what to do next (do the mission in PMs)
 # when mission team is approved, inc_leader() after mission success/failure
                     else:
@@ -276,8 +275,18 @@ class ResBot(commands.Cog):
                         await ch.send(txt.team_vote[4].format(
                             self.g.show_leader(),
                             ", ".join([self.g.get_nick(p) for p in cr.team])))
-                else:           # num of votes < number of players
-                    await ch.send(txt.team_vote[1].format(vs, ps))
+                        self.g.inc_leader()
+                        await ch.send(txt.team_vote[5].format(
+                            self.g.show_leader()))
+
+    async def succeed(self, ctx):
+        pass
+
+    async def fail(self, ctx):
+        pass
+
+    async def mission_vote(self, verdict, ctx):
+        pass
 
     @commands.command(**cmd_desc.status)
     async def status(self, ctx):

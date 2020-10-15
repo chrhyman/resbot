@@ -59,7 +59,7 @@ roles = {
 start = {
     0: A_IS_B,
     1: "Each player has been sent their private information. Please note that at this dev stage all EchoBot roles are public.\n\nThe following roles were assigned this game: {0}", # Game.all_roles
-    2: "*Player order* —\n**{0}**", # Game.show_order
+    2: "*Player order* —\n**{0}**", # Game.show_order('[delimiter]')
     3: "The first leader is **{0}**. They can use `!team <names separated by spaces>` to propose a team to go on the first mission or `!help team` for more info.", # Game.show_leader
     4: "The game is not ready to begin. Verify that all players are !ready and that the game has a valid number of players.",
     5: GAMEINPROG
@@ -69,7 +69,7 @@ team = {
     0: "The current leader is {0}", # Game.show_leader()
     1: "Unable to recognize these list items as players: {0}", # ", ".join(list)
     2: "Incorrect team size. {0} team members required but you provided {1}.",
-    3: "**Mission {0}, Round {1}:**\nLeader *{2}* has proposed the following team:\n\n{3}", # {0} = Game.missions[-1].n {1} = len(Game.missions[-1].rounds) {2} = Game.show_leader() # {3} = Game.show_team()
+    3: "**Mission {0}, Round {1}:**\nLeader *{2}* has proposed the following team:\n{3}", # {0} = Game.missions[-1].n {1} = len(Game.missions[-1].rounds) {2} = Game.show_leader() # {3} = Game.show_team()
     4: "You've already proposed a team for this round.",
     5: "All players should now vote for whether you `!approve` or `!reject` this team. It is recommended to vote privately so all votes can be made public simultaneously, at the end of the round."
 }
@@ -77,7 +77,7 @@ team = {
 team_vote = {
     0: "You've already voted!",
     1: "{0}/{1} votes received.",
-    2: "{1}{0}{1} voted to *{2}* the team.", # {1} = "**" if on team to bold name
+    2: "{1}{0}{1} voted to *{2}* the team.", # {1} = "**" if on team to bold name, else empty string
     3: "Leader *{0}'s* team (**{1}**) has been approved for the mission!",
     4: "Leader *{0}'s* team (**{1}**) was rejected.",
     5: "The next leader is ***{0}***. They can use `!team <names separated by spaces>` to propose a team to go on the mission or `!help team` for more info."

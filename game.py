@@ -14,7 +14,7 @@ class Game:
         self.has_started = False    # True when it's too late to join game
         self.ready_players = []     # list of name#id players ready to start
         self.number = None          # holds Number object, see classes.Number
-        self.order = []             # ordered list for turn order
+        self.order = []             # ordered list for turn/leader order
         self.nick_dict = {}         # in-game nicknames
         self.special_roles = []     # list of Avalon roles in game
         self.all_roles = []         # list of all roles in game
@@ -43,6 +43,9 @@ class Game:
         self.players[str(sender)] = Player(name=str(sender))
         self.ids[str(sender)] = sender.id
         self.assign_nick(str(sender), sender.name)
+
+    def add_round(self):
+        pass
 
     def assign_nick(self, full_name, nick_name):
         if full_name not in self.players:

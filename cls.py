@@ -147,7 +147,7 @@ class Round:
         self.li = leader_index
         self.team = []
         self.votes = {}         # dict of {<player>: boolean}
-        self.approved = None    # True if team has been approved, else False
+        self.approved = None    # True if approved, else False; None b4 tally
 
     def __str__(self):
         out = "Leader Index: " + str(self.li)
