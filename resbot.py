@@ -248,6 +248,7 @@ class ResBot(commands.Cog):
                     self.g.need_team_vote = False
                     majority = self.g.number.maj
                     tally = 0
+                    await ch.send(txt.team_vote[6])
                     for player in cr.votes:
                         bold = ""
                         if player in cr.team:
@@ -275,10 +276,10 @@ class ResBot(commands.Cog):
                             ", ".join([self.g.get_nick(p) for p in cr.team])))
                         self.g.inc_leader()
                         if len(cm.rounds) == 5:
-                            pass # hammer failed. The game is over, spies win!
+                            await ch.send(txt.team_vote[8]) # TODO: End of Game
                         else:
                             if len(cm.rounds) == 4:
-                                pass # warn about hammer
+                                await ch.send(txt.team_vote[7])
                             self.g.add_round()
                             await ch.send(txt.team_vote[5].format(
                                 self.g.show_leader()))

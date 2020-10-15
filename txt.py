@@ -77,8 +77,11 @@ team = {
 team_vote = {
     0: "You've already voted!",
     1: "{0}/{1} votes received.",
-    2: "{1}{0}{1} voted to *{2}* the team.", # {1} = "**" if on team to bold name, else empty string
+    2: "{1}{0}{1} voted *{2}*.", # {1} = "**" if on team to bold name, else empty string
     3: "Leader *{0}'s* team (**{1}**) has been approved for the mission!",
     4: "Leader *{0}'s* team (**{1}**) was rejected.",
-    5: "The next leader is ***{0}***. They can use `!team <names separated by spaces>` to propose a team to go on the mission or `!help team` for more info."
+    5: "The next leader is ***{0}***. They can use `!team <names separated by spaces>` to propose a team to go on the mission or `!help team` for more info.",
+    6: "All votes have been received and will now be revealed.",
+    7: "**Hammer** warning: The fourth team was just rejected for this mission. The next leader will have a chance to create a fifth team (known as the 'hammer'). If this team is also rejected, the SPIES will automatically win the game!",
+    8: "The SPIES have infiltrated the democratic workings of the RESISTANCE and dismantled them from within. They have sown discord such that no agreement could be reached among members of the RESISTANCE on how to proceed with their mission.\n\n**THE SPIES WIN!**"
 }
