@@ -90,3 +90,15 @@ reject = {
     "brief":        "Votes to reject the proposed team for the mission.",
     "description":  "Votes to reject the proposed team for the current round of this mission."
 }
+
+succeed = {
+    "name":         "succeed",
+    "brief":        "Votes to succeed the current mission.",
+    "description":  "Votes to succeed the current mission. Must be on the mission team, and should be sent privately."
+}
+
+fail = {
+    "name":         "fail",
+    "brief":        "Votes to fail the current mission.",
+    "description":  "Votes to fail the current mission. Must be on the mission team, and should be sent privately."
+}

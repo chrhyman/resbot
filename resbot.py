@@ -284,11 +284,13 @@ class ResBot(commands.Cog):
                             await ch.send(txt.team_vote[5].format(
                                 self.g.show_leader()))
 
+    @commands.command(**cmd_desc.succeed)
     async def succeed(self, ctx):
-        pass
+        await self.mission_vote(True, ctx)
 
+    @commands.command(**cmd_desc.fail)
     async def fail(self, ctx):
-        pass
+        await self.mission_vote(False, ctx)
 
     async def mission_vote(self, verdict, ctx):
         pass
