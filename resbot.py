@@ -309,10 +309,18 @@ class ResBot(commands.Cog):
             await sender.send(txt.mission_vote[2])
         else:
             if self.g.players[name].role.is_res and not verdict:
-                sender.send(txt.mission_vote[3])
+                await sender.send(txt.mission_vote[3])
                 verdict = True
             cm.vote(name, verdict)
-
+            votes, total = len(cm.votes), len(cm.approved_team)
+            if votes < total:
+                pass
+            elif votes == total:
+                # TODO: handle vote tallying, then display total SUCCESS/FAILs
+                # display mission outcome, record it
+                # run a sub-function for after mission to add new mission
+                # bc that needs to check for len(Game.missions) == 5 to END
+                pass
 
     @commands.command(**cmd_desc.status)
     async def status(self, ctx):
