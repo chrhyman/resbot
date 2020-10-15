@@ -45,7 +45,7 @@ class Game:
         self.assign_nick(str(sender), sender.name)
 
     def add_round(self):
-        pass
+        self.missions[-1].add_round(self.li)
 
     def assign_nick(self, full_name, nick_name):
         if full_name not in self.players:

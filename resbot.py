@@ -259,25 +259,29 @@ class ResBot(commands.Cog):
                         else:
                             await ch.send(txt.team_vote[2].format(
                                 self.g.get_nick(player), bold, "reject"))
+                    cm = self.g.curr_mission()
                     if tally >= majority:
                         cr.approved = True
-                        cm = self.g.curr_mission()
                         cm.assign_team()
                         await ch.send(txt.team_vote[3].format(
                             self.g.show_leader(),
                             ", ".join(self.g.list_mission_team())))
                         self.g.inc_leader()
-# TODO: tell them what to do next (do the mission in PMs)
-# when mission team is approved, inc_leader() after mission success/failure
+# TODO: tell them what to do next (mission vote)
                     else:
-# inc_leader() and display new leader, .add_round to curr_mission
                         cr.approved = False
                         await ch.send(txt.team_vote[4].format(
                             self.g.show_leader(),
                             ", ".join([self.g.get_nick(p) for p in cr.team])))
                         self.g.inc_leader()
-                        await ch.send(txt.team_vote[5].format(
-                            self.g.show_leader()))
+                        if len(cm.rounds) == 5:
+                            pass # hammer failed. The game is over, spies win!
+                        else:
+                            if len(cm.rounds) == 4:
+                                pass # warn about hammer
+                            self.g.add_round()
+                            await ch.send(txt.team_vote[5].format(
+                                self.g.show_leader()))
 
     async def succeed(self, ctx):
         pass
