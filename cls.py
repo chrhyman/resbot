@@ -121,6 +121,7 @@ class Mission:
         self.n = n
         self.rounds = []  # if len(rounds) == 5, it's hammer
         self.approved_team = []
+        self.votes = {}
         self.winner = None      # "R" or "S"
 
     def __str__(self):
@@ -128,6 +129,8 @@ class Mission:
         if len(self.rounds) != 0:
             for n, r in enumerate(self.rounds):
                 out += "\n- Round {0}: {1}".format(n+1, r)
+        if self.approved_team != []:
+            out += "\n- Mission team: " + ", ".join(self.approved_team)
         if self.winner is not None:
             out += "\n- Winner: {0}".format(self.winner)
         return out
@@ -141,6 +144,11 @@ class Mission:
         cr = self.rounds[-1]
         if cr.approved:
             self.approved_team = cr.team
+
+    def vote(self, player, verdict):
+        if player in self.votes:
+            raise GameError("%s has already voted" % player)
+        self.votes[player] = verdict
 
 class Round:
     def __init__(self, leader_index):

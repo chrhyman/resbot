@@ -85,3 +85,9 @@ team_vote = {
     7: "**Hammer** warning: The fourth team was just rejected for this mission. The next leader will have a chance to create a fifth team (known as the 'hammer'). If this team is also rejected, the SPIES will automatically win the game!",
     8: "The SPIES have infiltrated the democratic workings of the RESISTANCE and dismantled them from within. They have sown discord such that no agreement could be reached among members of the RESISTANCE on how to proceed with their mission.\n\n**THE SPIES WIN!**"
 }
+
+mission_vote = {
+    0: "The team for this mission hasn't been approved yet.",
+    1: "You aren't on the mission team.",
+    2: "You've already voted on this mission outcome. You can't change your mind now."
+}

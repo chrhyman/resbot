@@ -292,8 +292,27 @@ class ResBot(commands.Cog):
     async def fail(self, ctx):
         await self.mission_vote(False, ctx)
 
+    # not a command; handles the logic for !succeed and !fail at once
     async def mission_vote(self, verdict, ctx):
-        pass
+        sender = ctx.message.author
+        name = str(sender)
+        cm = self.g.curr_mission()
+        if not self.g:
+            pass
+        elif name not in self.g.players:
+            pass
+        elif cm.approved_team == []:
+            await sender.send(txt.mission_vote[0])
+        elif name not in cm.approved_team:
+            await sender.send(txt.mission_vote[1])
+        elif name in cm.votes:
+            await sender.send(txt.mission_vote[2])
+        else:
+            if self.g.players[name].role.is_res and not verdict:
+                sender.send(txt.mission_vote[3])
+                verdict = True
+            cm.vote(name, verdict)
+
 
     @commands.command(**cmd_desc.status)
     async def status(self, ctx):
