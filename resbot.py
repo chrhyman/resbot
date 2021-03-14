@@ -272,9 +272,9 @@ class ResBot(commands.Cog):
                             self.g.show_leader(),
                             ", ".join([self.g.get_nick(p) for p in cr.team])))
                         self.g.inc_leader()
-# TODO: End of game
                         if len(cm.rounds) == 5:
                             await ch.send(txt.team_vote[8])
+# TODO (inside `if`): End of game (self.gameover() to handle data if wanted)
                         else:
                             if len(cm.rounds) == 4:
                                 await ch.send(txt.team_vote[7])
@@ -295,9 +295,7 @@ class ResBot(commands.Cog):
         sender = ctx.message.author
         name = str(sender)
         cm = self.g.curr_mission()
-        if not self.g:
-            pass
-        elif name not in self.g.players:
+        if not self.g or name not in self.g.players:
             pass
         elif cm.approved_team == []:
             await sender.send(txt.mission_vote[0])
@@ -314,6 +312,8 @@ class ResBot(commands.Cog):
             if votes < total:
                 pass
             elif votes == total:
+                await self.g.chan.send(txt.mission_vote[4])
+                tally_succ, tally_fail = 0, 0
                 # TODO: handle vote tallying, then display total SUCCESS/FAILs
                 # display mission outcome, record it
                 # run a sub-function for after mission to add new mission

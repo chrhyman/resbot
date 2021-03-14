@@ -90,5 +90,6 @@ mission_vote = {
     0: "The team for this mission hasn't been approved yet.",
     1: "You aren't on the mission team.",
     2: "You've already voted on this mission outcome. You can't change your mind now.",
-    3: "You can't vote for this mission to fail because you're a member of the RESISTANCE. Your vote has been changed to a mission success. Also, stop trying to break the rules!"
+    3: "You can't vote for this mission to fail because you're a member of the RESISTANCE. Your vote has been changed to a mission success. Also, stop trying to break the rules!",
+    4: "The approved team has completed their mission. The outcome is now being determined."
 }
