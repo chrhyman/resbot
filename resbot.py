@@ -274,7 +274,7 @@ class ResBot(commands.Cog):
                         self.g.inc_leader()
                         if len(cm.rounds) == 5:
                             await ch.send(txt.team_vote[8])
-# TODO (inside `if`): End of game (self.gameover() to handle data if wanted)
+                            await self.gameover("S")
                         else:
                             if len(cm.rounds) == 4:
                                 await ch.send(txt.team_vote[7])
@@ -331,16 +331,39 @@ class ResBot(commands.Cog):
                 cm.assign_winner(outcome)
                 await self.next_mission()
 
+    # called after a mission outcome has been recorded, not a command
     async def next_mission(self):
-        # called after a mission outcome has been recorded, not a command
-        # provides current "score" for each team
-        # if the spies have 3 points they win
-        # if the resistance has 3 points, then check if there is merlin
-        # if there is a merlin, give assassin a chance to shoot
-        # if shoot merlin, spies win
-        # else miss merlin, resistance wins
-        # else no merlin and res has 3 points, resistance wins
-        pass
+        r, s = self.g.get_score()
+        await self.g.chan.send(txt.next_mission[3].format(r, s))
+        if s >= 3:
+            await self.g.chan.send(txt.next_mission[4])
+            await self.gameover("S")
+        elif r >= 3:
+            if 'Merlin' in self.g.special_roles:
+                # special handling for assassin shooting merlin
+                # this part should be the description telling the assassin
+                # what to do, which is use the `!shoot` command
+                # this IF needs to set a FLAG that !shoot checks
+                # and then if assassin shoots merlin, gameover("S")
+                # else gameover("R")
+                pass
+            else:
+                await self.g.chan.send(txt.next_mission[5])
+                await self.gameover("R")
+        await self.g.chan.send(txt.next_mission[0].format(
+        self.g.show_order(' > ')))
+        self.g.add_mission((self.g.missions[-1].n + 1), self.g.li)
+        await self.g.chan.send(txt.next_mission[1].format(self.g.show_leader()))
+        await self.g.chan.send(txt.next_mission[2])
+
+    async def gameover(self, winner):
+        if winner == "R":
+            await self.g.chan.send(txt.gameover[0])
+        elif winner == "S":
+            await self.g.chan.send(txt.gameover[1])
+        await self.g.chan.send("Say who wins, reveal roles, etc.")
+        await self.g.chan.send("Use `!new` to play a new game.")
+        self.g = None
 
     @commands.command(**cmd_desc.status)
     async def status(self, ctx):

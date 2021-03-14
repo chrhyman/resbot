@@ -83,7 +83,7 @@ team_vote = {
     5: "The next leader is ***{0}***. They can use `!team <names separated by spaces>` to propose a team to go on the mission or `!help team` for more info.",
     6: "All votes have been received and will now be revealed.",
     7: "**Hammer** warning: The fourth team was just rejected for this mission. The next leader will have a chance to create a fifth team (known as the 'hammer'). If this team is also rejected, the SPIES will automatically win the game!",
-    8: "The SPIES have infiltrated the democratic workings of the RESISTANCE and dismantled them from within. They have sown discord such that no agreement could be reached among members of the RESISTANCE on how to proceed with their mission.\n\n**THE SPIES WIN!**"
+    8: "The SPIES have infiltrated the democratic workings of the RESISTANCE and dismantled them from within. They have sown discord such that no agreement could be reached among members of the RESISTANCE on how to proceed with their mission."
 }
 
 mission_vote = {
@@ -99,5 +99,13 @@ mission_vote = {
 next_mission = {
     0: "*Player order* —\n**{0}**", # Game.show_order('[delimiter]')
     1: "The current leader is {0}", # Game.show_leader()
-    2: "They can use `!team <names separated by spaces>` to propose a team."
+    2: "They can use `!team <names separated by spaces>` to propose a team.",
+    3: "RESISTANCE wins: **{0}**\nSPY wins: **{1}**",
+    4: "The SPIES have won three missions.",
+    5: "The RESISTANCE has won three missions."
+}
+
+gameover = {
+    0: "**THE RESISTANCE WINS!**",
+    1: "**THE SPIES WIN!**"
 }

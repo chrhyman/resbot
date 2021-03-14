@@ -132,6 +132,15 @@ class Game:
         else:
             return self.nick_dict[full_name]
 
+    def get_score(self):
+        r, s = 0, 0
+        for m in self.missions:
+            if m.winner == "R":
+                r += 1
+            elif m.winner == "S":
+                s += 1
+        return r, s
+
     def get_status(self): #### INCOMPLETE
         '''Returns the game state details at any given point as a string.
         '''
