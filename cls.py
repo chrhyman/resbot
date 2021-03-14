@@ -145,6 +145,14 @@ class Mission:
         if cr.approved:
             self.approved_team = cr.team
 
+    def assign_winner(self, outcome):
+        if outcome is None:
+            raise GameError("Outcome was not determined!")
+        elif outcome:
+            self.winner = "R"
+        else:
+            self.winner = "S"
+
     def vote(self, player, verdict):
         if player in self.votes:
             raise GameError("%s has already voted" % player)

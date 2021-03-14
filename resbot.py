@@ -313,12 +313,34 @@ class ResBot(commands.Cog):
                 pass
             elif votes == total:
                 await self.g.chan.send(txt.mission_vote[4])
+                outcome = None
                 tally_succ, tally_fail = 0, 0
-                # TODO: handle vote tallying, then display total SUCCESS/FAILs
-                # display mission outcome, record it
-                # run a sub-function for after mission to add new mission
-                # bc that needs to check for len(Game.missions) == 5 to END
-                pass
+                for v in cm.votes.values():
+                    if v:
+                        tally_succ += 1
+                    else:
+                        tally_fail += 1
+                if tally_fail >= self.g.number.fails_needed(cm.n):
+                    outcome = False
+                    await self.g.chan.send(txt.mission_vote[6].format(
+                    cm.n, tally_succ, tally_fail))
+                else:
+                    outcome = True
+                    await self.g.chan.send(txt.mission_vote[5].format(
+                    cm.n, tally_succ, tally_fail))
+                cm.assign_winner(outcome)
+                await self.next_mission()
+
+    async def next_mission():
+        # called after a mission outcome has been recorded, not a command
+        # provides current "score" for each team
+        # if the spies have 3 points they win
+        # if the resistance has 3 points, then check if there is merlin
+        # if there is a merlin, give assassin a chance to shoot
+        # if shoot merlin, spies win
+        # else miss merlin, resistance wins
+        # else no merlin and res has 3 points, resistance wins
+        pass
 
     @commands.command(**cmd_desc.status)
     async def status(self, ctx):
