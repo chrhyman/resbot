@@ -18,7 +18,6 @@ class Game:
         self.nick_dict = {}         # in-game nicknames
         self.special_roles = []     # list of Avalon roles in game
         self.all_roles = []         # list of all roles in game
-        self.current_status = 0     # see Game.get_status() for handler
         self.missions = []          # ordered list of Mission objects
         self.li = 0                 # leader index, i.e. Game.order[li]
         self.need_team_vote = False # True=waiting for team approves/rejects
@@ -140,15 +139,6 @@ class Game:
             elif m.winner == "S":
                 s += 1
         return r, s
-
-    def get_status(self): #### INCOMPLETE
-        '''Returns the game state details at any given point as a string.
-        '''
-        status_dict = {
-            0: "Initialized",
-            1: "example other status"
-        }
-        return status_dict[self.current_status]
 
     def inc_leader(self):       # after leader takes turn, increment index
         self.li += 1

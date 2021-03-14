@@ -41,12 +41,6 @@ ready = {
     "description":  "Command used after all players have !join'd the game to tell the bot that that player is ready to begin the game. Waits until all joined players are ready. If any new players join before the game starts, all players are un-!ready'd. Once all players are ready, starts the game."
 }
 
-status = {
-    "name":         "status",
-    "brief":        "Gives the current game status.",
-    "description":  "Returns the current game status. Depending on the game state, this may return various different types of messages."
-}
-
 nick = {
     "name":         "nick",
     "aliases":      ["change-nick", "change_nick"],
@@ -93,6 +87,7 @@ reject = {
 
 succeed = {
     "name":         "succeed",
+    "aliases":      ["success", "pass"],
     "brief":        "Votes to succeed the current mission.",
     "description":  "Votes to succeed the current mission. Must be on the mission team, and should be sent privately."
 }

@@ -180,6 +180,8 @@ class ResBot(commands.Cog):
             await self.g.chan.send(txt.start[2].format(
                 self.g.show_order(' > ')))
             await self.g.chan.send(txt.start[3].format(self.g.show_leader()))
+            await self.g.chan.send(txt.start[6].format(
+                str(self.g.curr_team_size())))
             print(txt.log["start"].format(self.g.show_order()))
         else:
             await self.g.chan.send(txt.start[4])
@@ -230,7 +232,7 @@ class ResBot(commands.Cog):
         sender = ctx.message.author
         name = str(sender)
         if (not self.g or name not in self.g.players
-        or not self.g.need_team_vote):
+            or not self.g.need_team_vote):
             pass
         else:
             cr = self.g.curr_round()
@@ -295,11 +297,12 @@ class ResBot(commands.Cog):
         sender = ctx.message.author
         name = str(sender)
         cm = self.g.curr_mission()
+        ateam = cm.approved_team
         if not self.g or name not in self.g.players:
             pass
-        elif cm.approved_team == []:
+        elif ateam == []:
             await sender.send(txt.mission_vote[0])
-        elif name not in cm.approved_team:
+        elif name not in ateam:
             await sender.send(txt.mission_vote[1])
         elif name in cm.votes:
             await sender.send(txt.mission_vote[2])
@@ -308,11 +311,12 @@ class ResBot(commands.Cog):
                 await sender.send(txt.mission_vote[3])
                 verdict = True
             cm.vote(name, verdict)
-            votes, total = len(cm.votes), len(cm.approved_team)
+            votes, total = len(cm.votes), len(ateam)
             if votes < total:
                 pass
             elif votes == total:
-                await self.g.chan.send(txt.mission_vote[4])
+                teamlist = ", ".join([self.g.get_nick(p) for p in ateam])
+                await self.g.chan.send(txt.mission_vote[4].format(teamlist))
                 outcome = None
                 tally_succ, tally_fail = 0, 0
                 for v in cm.votes.values():
@@ -323,11 +327,11 @@ class ResBot(commands.Cog):
                 if tally_fail >= self.g.number.fails_needed(cm.n):
                     outcome = False
                     await self.g.chan.send(txt.mission_vote[6].format(
-                    cm.n, tally_succ, tally_fail))
+                        cm.n, tally_succ, tally_fail))
                 else:
                     outcome = True
                     await self.g.chan.send(txt.mission_vote[5].format(
-                    cm.n, tally_succ, tally_fail))
+                        cm.n, tally_succ, tally_fail))
                 cm.assign_winner(outcome)
                 await self.next_mission()
 
@@ -336,12 +340,16 @@ class ResBot(commands.Cog):
 # TODO: add an indicator for how many people need to be on the team
 # add that back to the !start function as well
         r, s = self.g.get_score()
-        await self.g.chan.send(txt.next_mission[3].format(r, s))
+        m = self.g.curr_mission().n # the mission just completed (int)
+        next_n = m + 1
+        await self.g.chan.send(txt.next_mission[3].format(r, s, m))
+        #check for gameovers
         if s >= 3:
             await self.g.chan.send(txt.next_mission[4])
             await self.gameover("S")
         elif r >= 3:
             if 'Merlin' in self.g.special_roles:
+                # TODO
                 # special handling for assassin shooting merlin
                 # this part should be the description telling the assassin
                 # what to do, which is use the `!shoot` command
@@ -352,27 +360,35 @@ class ResBot(commands.Cog):
             else:
                 await self.g.chan.send(txt.next_mission[5])
                 await self.gameover("R")
+        # no gameovers:
         await self.g.chan.send(txt.next_mission[0].format(
-        self.g.show_order(' > ')))
-        self.g.add_mission((self.g.missions[-1].n + 1), self.g.li)
+            self.g.show_order(' > ')))
+        self.g.add_mission((next_n), self.g.li)
         await self.g.chan.send(txt.next_mission[1].format(self.g.show_leader()))
-        await self.g.chan.send(txt.next_mission[2])
+        await self.g.chan.send(txt.next_mission[2].format(str(
+            self.g.curr_team_size())))
+        if self.g.number.fails_needed(next_n) == 2:
+            await self.g.chan.send(txt.next_mission[6])
 
     async def gameover(self, winner):
+        winning_players = []
+        roles_revealed = {}
         if winner == "R":
             await self.g.chan.send(txt.gameover[0])
         elif winner == "S":
             await self.g.chan.send(txt.gameover[1])
-        await self.g.chan.send("Say who wins, reveal roles, etc.")
-        await self.g.chan.send("Use `!new` to play a new game.")
+        for nameid, pl in self.g.players.items(): # pl = Player object
+            nick = self.g.get_nick(nameid)
+            if ((pl.role.is_res and winner == "R")
+                or (not pl.role.is_res and winner == "S")):
+                winning_players.append(nick)
+            roles_revealed[nick] = str(pl.role)
+        await self.g.chan.send(txt.gameover[2].format(
+            ", ".join(winning_players)))
+        await self.g.chan.send(txt.gameover[3].format(
+            "\n".join([f"*{n}*: **{r}**" for n, r in roles_revealed.items()])))
+        await self.g.chan.send(txt.gameover[4])
         self.g = None
-
-    @commands.command(**cmd_desc.status)
-    async def status(self, ctx):
-        if not self.g:
-            await ctx.send(txt.log["nogame"]) # incomplete
-        else:
-            await ctx.send(self.g.get_status())
 
 @client.event
 async def on_ready():

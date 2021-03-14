@@ -62,7 +62,8 @@ start = {
     2: "*Player order* —\n**{0}**", # Game.show_order('[delimiter]')
     3: "The first leader is **{0}**. They can use `!team <names separated by spaces>` to propose a team to go on the first mission or `!help team` for more info.", # Game.show_leader
     4: "The game is not ready to begin. Verify that all players are !ready and that the game has a valid number of players.",
-    5: GAMEINPROG
+    5: GAMEINPROG,
+    6: "The first team must have **{0}** members."
 }
 
 team = {
@@ -91,21 +92,25 @@ mission_vote = {
     1: "You aren't on the mission team.",
     2: "You've already voted on this mission outcome. You can't change your mind now.",
     3: "You can't vote for this mission to fail because you're a member of the RESISTANCE. Your vote has been changed to a mission success. Also, stop trying to break the rules!",
-    4: "The approved team has completed their mission. The outcome is now being determined.",
-    5: "Mission #{0} has been won by the RESISTANCE. Successes: {1}. Fails: {2}.",
-    6: "Mission #{0} has been won by the SPIES. Successes: {1}. Fails: {2}."
+    4: "The approved team *({0})* has completed their mission. The outcome is now being determined.",
+    5: "*Mission #{0}* has been won by the **RESISTANCE**. **Successes: {1}**. Fails: {2}.",
+    6: "*Mission #{0}* has been won by the **SPIES**. Successes: {1}. **Fails: {2}**."
 }
 
 next_mission = {
     0: "*Player order* —\n**{0}**", # Game.show_order('[delimiter]')
-    1: "The current leader is {0}", # Game.show_leader()
-    2: "They can use `!team <names separated by spaces>` to propose a team.",
-    3: "RESISTANCE wins: **{0}**\nSPY wins: **{1}**",
+    1: "The current leader is **{0}**. They can use `!team <names separated by spaces>` to propose a team.",
+    2: "The next team must have **{0}** members.",
+    3: "*After {2} mission(s)...*\nRESISTANCE wins: **{0}**\nSPY wins: **{1}**",
     4: "The SPIES have won three missions.",
-    5: "The RESISTANCE has won three missions."
+    5: "The RESISTANCE has won three missions.",
+    6: "*Note:* There are 7 or more players, so the RESISTANCE will win this 4th mission unless the SPIES can manage to contribute **2** or more votes for mission failure."
 }
 
 gameover = {
     0: "**THE RESISTANCE WINS!**",
-    1: "**THE SPIES WIN!**"
+    1: "**THE SPIES WIN!**",
+    2: "Congratulations to the winners: **{}**!",
+    3: "Here are all of the roles from this game —\n{0}",
+    4: "Thank you for playing my Discord bot for The Resistance!\nUse `!new` to play a new game."
 }
