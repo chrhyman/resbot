@@ -331,7 +331,7 @@ class ResBot(commands.Cog):
                 cm.assign_winner(outcome)
                 await self.next_mission()
 
-    async def next_mission():
+    async def next_mission(self):
         # called after a mission outcome has been recorded, not a command
         # provides current "score" for each team
         # if the spies have 3 points they win
