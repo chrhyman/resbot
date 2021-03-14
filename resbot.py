@@ -333,6 +333,8 @@ class ResBot(commands.Cog):
 
     # called after a mission outcome has been recorded, not a command
     async def next_mission(self):
+# TODO: add an indicator for how many people need to be on the team
+# add that back to the !start function as well
         r, s = self.g.get_score()
         await self.g.chan.send(txt.next_mission[3].format(r, s))
         if s >= 3:
