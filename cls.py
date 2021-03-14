@@ -1,4 +1,4 @@
-from constants import *     # replace * with explicit list once finalized
+from constants import *
 
 class GameError(Exception):
     '''Exception raised for any data state that represents a contradiction

@@ -229,11 +229,8 @@ class ResBot(commands.Cog):
     async def team_vote(self, verdict, ctx):
         sender = ctx.message.author
         name = str(sender)
-        if not self.g:
-            pass
-        elif name not in self.g.players:
-            pass
-        elif not self.g.need_team_vote:
+        if (not self.g or name not in self.g.players
+        or not self.g.need_team_vote):
             pass
         else:
             cr = self.g.curr_round()
