@@ -22,7 +22,7 @@ log = {
 new = {
     0: GAMEINPROG,
     1: "Please send that command again from the primary game channel, not a private chat.",
-    2: "New game started! Send '!join' to join the game."
+    2: "New game started! Send `!join` to join the game."
 }
 
 join = {
@@ -58,7 +58,7 @@ roles = {
 
 start = {
     0: A_IS_B,
-    1: "Each player has been sent their private information. Please note that at this dev stage all EchoBot roles are public.\n\nThe following roles were assigned this game: {0}", # Game.all_roles
+    1: "Each player has been sent their private information. Please use PMs *only* to send private `!command`s to ResBot. Players should *never* privately communicate during the game — everyone should talk in the **public channel** (text and/or voice).\n\nThe following roles were assigned this game: {0}", # Game.all_roles
     2: "*Player order* —\n**{0}**", # Game.show_order('[delimiter]')
     3: "The first leader is **{0}**. They can use `!team <names separated by spaces>` to propose a team to go on the first mission or `!help team` for more info.", # Game.show_leader
     4: "The game is not ready to begin. Verify that all players are !ready and that the game has a valid number of players.",
