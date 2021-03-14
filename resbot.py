@@ -272,8 +272,9 @@ class ResBot(commands.Cog):
                             self.g.show_leader(),
                             ", ".join([self.g.get_nick(p) for p in cr.team])))
                         self.g.inc_leader()
+# TODO: End of game
                         if len(cm.rounds) == 5:
-                            await ch.send(txt.team_vote[8]) # TODO: End of Game
+                            await ch.send(txt.team_vote[8])
                         else:
                             if len(cm.rounds) == 4:
                                 await ch.send(txt.team_vote[7])
