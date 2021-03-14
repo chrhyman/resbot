@@ -95,3 +95,9 @@ mission_vote = {
     5: "Mission #{0} has been won by the RESISTANCE. Successes: {1}. Fails: {2}.",
     6: "Mission #{0} has been won by the SPIES. Successes: {1}. Fails: {2}."
 }
+
+next_mission = {
+    0: "*Player order* —\n**{0}**", # Game.show_order('[delimiter]')
+    1: "The current leader is {0}", # Game.show_leader()
+    2: "They can use `!team <names separated by spaces>` to propose a team."
+}
