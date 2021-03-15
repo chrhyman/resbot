@@ -1,7 +1,5 @@
 from random import shuffle
 
-from .error import GameError
-
 class Player:
     def __init__(self, discord_user):       # arg=discord.py User model object
         self.nameid = str(discord_user)     # str, 'discord_username#id'
