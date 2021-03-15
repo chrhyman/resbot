@@ -4,6 +4,9 @@ class Role:
     def __str__(self):
         return self.role
 
+class Leader:
+    pass
+
 class Res(Role):
     pass
 
@@ -11,7 +14,7 @@ class VanRes(Res):
     def __init__(self):
         self.role = R.VANRES
 
-class Merlin(Res):
+class Merlin(Res, Leader):
     def __init__(self):
         self.role = R.MERLIN
 
@@ -33,7 +36,7 @@ class Assassin(Shooter):
     def __init__(self):
         self.role = R.ASSASSIN
 
-class Morgana(Spy):
+class Morgana(Spy, Leader):
     def __init__(self):
         self.role = R.MORGANA
 
