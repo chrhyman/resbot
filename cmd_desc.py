@@ -73,6 +73,13 @@ team = {
     Example: `!team Bob Mary Sue` will propose a team of Bob, Mary, and Sue.'''
 }
 
+shoot = {
+    "name":         "shoot",
+    "brief":        "Assassin-only command to shoot Merlin",
+    "description":  '''Allows the assassin to choose a target to shoot after the Resistance have won the majority of the missions. Their goal is to shoot Merlin, the member of the Resistance who knows the identity of the Spies and might have been too obvious with their leadership. If the assassin is correct, they win the game for the Spies. If they are incorrect, the Resistance wins the game as they have already won 3 missions.\n\n
+    Example: `!shoot Tom` will win for the Spies if Tom is Merlin and win for the Resistance otherwise.'''
+}
+
 approve = {
     "name":         "approve",
     "brief":        "Votes to approve the proposed team",

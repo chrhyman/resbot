@@ -22,6 +22,7 @@ class Game:
         self.li = 0                 # leader index, i.e. Game.order[li]
         self.need_team_vote = False # True=waiting for team approves/rejects
         self.has_voted = []         # reusable list for vote checking
+        self.need_target = False    # True=assassin trying to shoot Merlin
 
     def add_mission(self, n, leader_index):
         if not (1 <= n <= 5):

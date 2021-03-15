@@ -104,7 +104,14 @@ next_mission = {
     3: "*After {2} mission(s)...*\nRESISTANCE wins: **{0}**\nSPY wins: **{1}**",
     4: "The SPIES have won three missions.",
     5: "The RESISTANCE has won three missions.",
-    6: "*Note:* There are 7 or more players, so the RESISTANCE will win this 4th mission unless the SPIES can manage to contribute **2** or more votes for mission failure."
+    6: "*Note:* There are 7 or more players, so the RESISTANCE will win this 4th mission unless the SPIES can manage to contribute **2** or more votes for mission failure.",
+    7: "The RESISTANCE has won three missions, but members of the RESISTANCE, **remain silent!** The ***ASSASSIN*** is looking for their target.\n\nSPIES, the RESISTANCE has won for now, but you have an opportunity to eliminate their leader. Once you are done discussing, the assassin can use the command `!shoot [player]`. If **MERLIN** dies, then the SPIES will win. Otherwise, the RESISTANCE will have succeeded in their task."
+}
+
+shoot = {
+    0: "You aren't the assassin.",
+    1: "*{0}* wasn't recognized as a player name or nickname.",
+    2: "The assassin has shot {0}!"
 }
 
 gameover = {

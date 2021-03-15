@@ -2,6 +2,7 @@ from discord.ext import commands
 
 import game
 from cls import Caseless
+from constants import MERLIN
 import cmd_desc, txt
 
 import privdata                 # not in repo for security
@@ -167,8 +168,6 @@ class ResBot(commands.Cog):
             for pl in self.g.players:
                 user = self.bot.get_user(self.g.ids[pl])
                 pl_role = self.g.players[pl].role
-                # unable to use bot to PM bot
-                # workaround: if an echobot, then send role to game channel
                 if pl[:7].lower() == "echobot":
                     await self.g.chan.send(txt.start[0].format(
                         self.g.get_nick(pl), str(pl_role)))
@@ -198,6 +197,8 @@ class ResBot(commands.Cog):
             await sender.send(txt.team[0].format(self.g.show_leader()))
         elif not self.g.need_team():
             await sender.send(txt.team[4])
+        elif self.g.need_target:
+            return      # should be a !shoot command, not !team; ignore
         else:
             pl_lst = team_list.split()
             not_pls = [p for p in pl_lst if not self.g.is_player(p)]
@@ -337,10 +338,8 @@ class ResBot(commands.Cog):
 
     # called after a mission outcome has been recorded, not a command
     async def next_mission(self):
-# TODO: add an indicator for how many people need to be on the team
-# add that back to the !start function as well
         r, s = self.g.get_score()
-        m = self.g.curr_mission().n # the mission just completed (int)
+        m = self.g.curr_mission().n     # the mission just completed (int)
         next_n = m + 1
         await self.g.chan.send(txt.next_mission[3].format(r, s, m))
         #check for gameovers
@@ -348,15 +347,10 @@ class ResBot(commands.Cog):
             await self.g.chan.send(txt.next_mission[4])
             await self.gameover("S")
         elif r >= 3:
-            if 'Merlin' in self.g.special_roles:
-                # TODO
-                # special handling for assassin shooting merlin
-                # this part should be the description telling the assassin
-                # what to do, which is use the `!shoot` command
-                # this IF needs to set a FLAG that !shoot checks
-                # and then if assassin shoots merlin, gameover("S")
-                # else gameover("R")
-                pass
+            if MERLIN in self.g.special_roles:
+                self.g.need_target = True
+                await self.g.chan.send(txt.next_mission[7])
+                return
             else:
                 await self.g.chan.send(txt.next_mission[5])
                 await self.gameover("R")
@@ -370,6 +364,28 @@ class ResBot(commands.Cog):
         if self.g.number.fails_needed(next_n) == 2:
             await self.g.chan.send(txt.next_mission[6])
 
+    @commands.command(**cmd_desc.shoot)
+    async def shoot(self, ctx, *, target):
+        if not self.g.need_target:
+            return
+        sender = ctx.message.author
+        name = str(sender)
+        if not self.g.players[name].role.can_shoot:
+            await sender.send(txt.shoot[0])
+        elif not self.g.is_player(target):
+            await sender.send(txt.shoot[1].format(target))
+        else:
+            t = None
+            for nameid, pl in self.g.players.items():
+                if target.casefold() == self.g.nick_dict[nameid].casefold():
+                    t = pl
+            await self.g.chan.send(txt.shoot[2].format(self.g.get_nick(str(t))))
+            if t.role.role == MERLIN:
+                await self.gameover("S")
+            else:
+                await self.gameover("R")
+
+    # displays end of game info when triggered (not a command) and deletes Game
     async def gameover(self, winner):
         winning_players = []
         roles_revealed = {}
@@ -386,7 +402,7 @@ class ResBot(commands.Cog):
         await self.g.chan.send(txt.gameover[2].format(
             ", ".join(winning_players)))
         await self.g.chan.send(txt.gameover[3].format(
-            "\n".join([f"*{n}*: **{r}**" for n, r in roles_revealed.items()])))
+            "\n".join([f"*{n}* : **{r}**" for n, r in roles_revealed.items()])))
         await self.g.chan.send(txt.gameover[4])
         self.g = None
 
