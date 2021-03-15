@@ -1,5 +1,7 @@
 from random import shuffle
 
+from cls.error import GameError
+
 class Player:
     def __init__(self, discord_user):       # arg=discord.py User model object
         self.nameid = str(discord_user)     # str, 'discord_username#id'
@@ -13,6 +15,9 @@ class Player:
 
     def __str__(self):
         return self.nick
+
+    def update_nick(self, new_nick):
+        self.nick = new_nick
 
 class PlayerList(list):
     def __contains__(self, player_str):
@@ -40,6 +45,14 @@ class GamePlayerList(PlayerList):
     def __init__(self, lst=[]):
         super().__init__(lst)
         self.leader = 0
+
+    def change_nick(self, player_str, new_nick):
+        if new_nick in self:
+            raise GameError("That name is already in use")
+        elif player_str not in self:
+            raise GameError(f"Player not in game: {player_str}")
+        else:
+            self.get_player(player_str).update_nick(new_nick)
 
     def show(self, delimiter):
         names = []
