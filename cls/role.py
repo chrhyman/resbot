@@ -25,3 +25,29 @@ class Spy(Role):
 class VanSpy(Spy):
     def __init__(self):
         self.role = R.VANSPY
+
+class Shooter(Spy):
+    pass
+
+class Assassin(Shooter):
+    def __init__(self):
+        self.role = R.ASSASSIN
+
+class Morgana(Spy):
+    def __init__(self):
+        self.role = R.MORGANA
+
+class Invisible(Spy):
+    pass
+
+class Mordred(Invisible):
+    def __init__(self):
+        self.role = R.MORDRED
+
+class MordAss(Invisible, Shooter):
+    def __init__(self):
+        self.role = R.MORDASS
+
+class Oberon(Spy):
+    def __init__(self):
+        self.role = R.OBERON
