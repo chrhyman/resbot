@@ -55,7 +55,7 @@ class Mordred(Hidden):
     def __init__(self):
         self.role = R.MORDRED
 
-class MordAss(Hidden, Shooter):
+class MordAss(Mordred, Assassin):
     def __init__(self):
         self.role = R.MORDASS
 
