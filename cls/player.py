@@ -32,7 +32,7 @@ class PlayerList(list):
         for i in range(len(self)):
             name = str(self[i])
             if self.leader == i:
-                name = "*" + name + "*"
+                name = f"*{name}*"
             names.append(name)
         return delimiter.join(names)
 
