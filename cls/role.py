@@ -37,14 +37,14 @@ class Morgana(Spy):
     def __init__(self):
         self.role = R.MORGANA
 
-class Invisible(Spy):
+class Hidden(Spy):
     pass
 
-class Mordred(Invisible):
+class Mordred(Hidden):
     def __init__(self):
         self.role = R.MORDRED
 
-class MordAss(Invisible, Shooter):
+class MordAss(Hidden, Shooter):
     def __init__(self):
         self.role = R.MORDASS
 
