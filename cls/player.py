@@ -15,10 +15,6 @@ class Player:
         return self.nick
 
 class PlayerList(list):
-    def __init__(self):
-        super().__init__()
-        self.leader = 0
-
     def __contains__(self, player_str):
         if isinstance(self.get_player(player_str), Player):
             return True
@@ -28,13 +24,7 @@ class PlayerList(list):
         return self.show(', ')
 
     def show(self, delimiter):
-        names = []
-        for i in range(len(self)):
-            name = str(self[i])
-            if self.leader == i:
-                name = f"*{name}*"
-            names.append(name)
-        return delimiter.join(names)
+        return delimiter.join([str(p) for p in self])
 
     def get_player(self, player_str):
         for player in self:
@@ -45,6 +35,20 @@ class PlayerList(list):
 
     def shuffle(self):
         shuffle(self)
+
+class GamePlayerList(PlayerList):
+    def __init__(self, lst=[]):
+        super().__init__(lst)
+        self.leader = 0
+
+    def show(self, delimiter):
+        names = []
+        for i in range(len(self)):
+            name = str(self[i])
+            if self.leader == i:
+                name = f"*{name}*"
+            names.append(name)
+        return delimiter.join(names)
 
 # TEMPORARY
 class DU:
