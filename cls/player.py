@@ -28,7 +28,13 @@ class PlayerList(list):
         return self.show(', ')
 
     def show(self, delimiter):
-        return delimiter.join([str(p) for p in self])
+        names = []
+        for i in range(len(self)):
+            name = str(self[i])
+            if self.leader == i:
+                name = "*" + name + "*"
+            names.append(name)
+        return delimiter.join(names)
 
     def get_player(self, player_str):
         for player in self:
