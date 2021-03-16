@@ -1,5 +1,7 @@
 from discord.ext import commands
 
+from game import Game
+
 import privdata as pd       # not in repo for security
 TOKEN = pd.TOKEN            # type str
 ADMIN_IDS = pd.ADMIN_IDS    # iterable of type int
