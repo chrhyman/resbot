@@ -1,6 +1,7 @@
 from discord.ext import commands
 
 from game import Game
+# from cls.error import GameError
 
 import privdata as pd       # not in repo for security
 TOKEN = pd.TOKEN            # type str
@@ -24,6 +25,16 @@ class ResBot(commands.Cog):
     @is_admin()
     async def end(self, ctx):
         self.g = None
+
+#    @commands.command(**txt.command_descriptions["cmd"])
+#    async def cmd(self, ctx, *, arg):
+#        if self.g:
+#            try:
+#                data = self.g.process_command("cmd", ctx, arg)
+#            except GameError as e:
+#                await ctx.send(str(e))
+#                return
+#            await self.g.process_output(data)
 
 @client.event
 async def on_ready():
