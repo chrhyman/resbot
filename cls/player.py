@@ -20,8 +20,8 @@ class Player:
         self.nick = new_nick
 
 class PlayerList(list):
-    def __contains__(self, player_str):
-        if isinstance(self.get_player(player_str), Player):
+    def __contains__(self, pl):
+        if isinstance(self.get_player(pl), Player):
             return True
         return False
 
@@ -31,10 +31,15 @@ class PlayerList(list):
     def show(self, delimiter):
         return delimiter.join([str(p) for p in self])
 
-    def get_player(self, player_str):
+    def get_player(self, pl):
         for player in self:
             matches = [player.nameid, str(player.id), player.nick]
-            if player_str.casefold() in [n.casefold() for n in matches]:
+            if isinstance(pl, Player) and pl == player:
+                return player
+            elif (
+                isinstance(pl, str) and
+                pl.casefold() in [n.casefold() for n in matches]
+                ):
                 return player
         return None
 
