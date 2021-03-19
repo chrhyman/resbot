@@ -1,6 +1,7 @@
 from random import shuffle
 
 from cls.error import GameError
+from cls.caseless import Caseless
 
 class Player:
     def __init__(self, discord_user):       # arg=discord.py User model object
@@ -36,10 +37,7 @@ class PlayerList(list):
             matches = [player.nameid, str(player.id), player.nick]
             if isinstance(pl, Player) and pl == player:
                 return player
-            elif (
-                isinstance(pl, str) and
-                pl.casefold() in [n.casefold() for n in matches]
-                ):
+            elif isinstance(pl, str) and pl in Caseless(matches):
                 return player
         return None
 
