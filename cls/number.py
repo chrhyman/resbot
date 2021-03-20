@@ -29,7 +29,13 @@ class Number:
             self.mission += 1
 
     def team_size(self):
-        return Number.TEAM_SIZE_MATRIX[self.mission][self.players]
+        try:
+            size = Number.TEAM_SIZE_MATRIX[self.mission][self.players]
+        except Exception as e:
+            raise GameError(f"Invalid team size; raised exception '{e}'")
+        if not isinstance(size, int):
+            raise GameError(f"Invalid team size: {size}")   # `None` is likely
+        return size
 
     def fails_needed(self):
         if self.mission == 4 and self.players >= 7:
