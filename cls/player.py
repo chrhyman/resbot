@@ -1,5 +1,6 @@
 from random import shuffle
 
+from cls.role import Role
 from cls.error import GameError
 from cls.caseless import Caseless
 
@@ -16,6 +17,14 @@ class Player:
 
     def __str__(self):
         return self.nick
+
+    def assign_role(self, role):
+        if self.role is not None:
+            raise GameError(f"Role is already {self.role}")
+        elif not isinstance(role, Role):
+            raise GameError("Must assign role of type Role")
+        else:
+            self.role = role
 
     def update_nick(self, new_nick):
         self.nick = new_nick
