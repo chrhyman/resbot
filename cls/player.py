@@ -1,8 +1,7 @@
 from random import shuffle
 
 from cls.role import Role
-from cls.error import GameError
-from cls.caseless import Caseless
+from cls.util import Caseless, GameError
 
 class Player:
     def __init__(self, discord_user):       # arg=discord.py User model object

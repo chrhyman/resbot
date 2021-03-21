@@ -1,7 +1,7 @@
 from discord.ext import commands
 
 from game import Game
-# from cls.error import GameError
+# from cls.util import GameError
 
 import privdata as pd       # not in repo for security
 TOKEN = pd.TOKEN            # type str

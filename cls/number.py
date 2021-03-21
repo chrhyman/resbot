@@ -1,4 +1,4 @@
-from cls.error import GameError
+from cls.util import GameError
 
 class Number:
     MIN = 5
