@@ -8,8 +8,8 @@ class Player:
         self.nameid = str(discord_user)     # str, 'discord_username#id'
         self.id = discord_user.id           # int, discord_unique_id for PMs
         self.nick = discord_user.name       # str, 'discord_username'
-        self.role = None                    # Role object for this player
-        self.ready = False                  # !ready sets to True
+        self.role = None                    # Role object
+        self.ready = False                  # flag set by _ (>> !ready)
         self.needs_to_vote = False          # flag set by _
         self.has_voted = False              # flag set by _
         self.needs_team = False             # flag set by _
@@ -66,12 +66,8 @@ class GamePlayerList(PlayerList):
             self.get_player(player_str).update_nick(new_nick)
 
     def show(self, delimiter):
-        names = []
-        for i in range(len(self)):
-            name = str(self[i])
-            if self.leader == i:
-                name = f"*{name}*"
-            names.append(name)
+        names = [str(p) for p in self]
+        names[self.leader] = f"*{names[self.leader]}*"
         return delimiter.join(names)
 
 # TEMPORARY
