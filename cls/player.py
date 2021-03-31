@@ -9,10 +9,7 @@ class Player:
         self.id = discord_user.id           # int, discord_unique_id for PMs
         self.nick = discord_user.name       # str, 'discord_username'
         self.role = None                    # Role object
-        self.ready = False                  # flag set by _ (>> !ready)
-        self.needs_to_vote = False          # flag set by _
-        self.has_voted = False              # flag set by _
-        self.needs_team = False             # flag set by _
+        self.ready = False                  # flag for player ready state
 
     def __str__(self):
         return self.nick
@@ -37,8 +34,17 @@ class PlayerList(list):
     def __str__(self):
         return self.show(', ')
 
-    def show(self, delimiter):
-        return delimiter.join([str(p) for p in self])
+    def all_players_ready(self):
+        ready_flags = [player.ready for player in self]
+        return all(ready_flags)     # True iff all ready flags are True
+
+    def change_nick(self, player_str, new_nick):
+        if new_nick in self:
+            raise GameError("That name is already in use")
+        elif player_str not in self:
+            raise GameError(f"Player not in game: {player_str}")
+        else:
+            self.get_player(player_str).update_nick(new_nick)
 
     def get_player(self, pl):
         for player in self:
@@ -49,26 +55,28 @@ class PlayerList(list):
                 return player
         return None
 
+    def show(self, delimiter):
+        return delimiter.join([str(p) for p in self])
+
     def shuffle(self):
         shuffle(self)
+
+    def unready_all_players(self):
+        for player in self:
+            player.ready = False
 
 class GamePlayerList(PlayerList):
     def __init__(self, lst=[]):
         super().__init__(lst)
         self.leader = 0
 
-    def change_nick(self, player_str, new_nick):
-        if new_nick in self:
-            raise GameError("That name is already in use")
-        elif player_str not in self:
-            raise GameError(f"Player not in game: {player_str}")
-        else:
-            self.get_player(player_str).update_nick(new_nick)
-
     def show(self, delimiter):
         names = [str(p) for p in self]
         names[self.leader] = f"*{names[self.leader]}*"
         return delimiter.join(names)
+
+    def shuffle(self):
+        pass # override bc order now matters; shouldn't call on GamePlayerList
 
 # TEMPORARY
 class DU:
