@@ -1,4 +1,6 @@
 class Caseless:
+    '''Uses .casefold() to implement `in` without regards to case
+    '''
     def __init__(self, iter):
         self.iter = iter
 
