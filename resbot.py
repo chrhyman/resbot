@@ -3,28 +3,32 @@ from discord.ext import commands
 from game import Game
 # from cls.util import GameError
 
-import privdata as pd       # not in repo for security
-TOKEN = pd.TOKEN            # type str
-ADMIN_IDS = pd.ADMIN_IDS    # iterable of type int
+from private_data import TOKEN, ADMIN_IDS   # bot token, Discord user ID
 
-BOT_PREFIX = ("!")          # iterable of type str
+CTX = commands.Context      # type alias
+
+BOT_PREFIX = ("!")          # iterable of str
 
 client = commands.Bot(command_prefix=BOT_PREFIX)
 
 def is_admin():
-    def pred(ctx):
+    def pred(ctx: CTX) -> bool:
         return ctx.message.author.id in ADMIN_IDS
     return commands.check(pred)
 
 class ResBot(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.g = None       # type Game when in progress
+        self.g = None       # Type[Game] when in progress, else None
 
-    @commands.command(name="end", description="Admin only. Ends current game.")
+    @commands.command(
+        name="end",
+        description="Admin only. Ends current game."
+        )
     @is_admin()
-    async def end(self, ctx):
+    async def end(self, ctx: CTX) -> None:
         self.g = None
+        await ctx.send("The game has ended.")
 
 #    @commands.command(**txt.command_descriptions["cmd"])
 #    async def cmd(self, ctx, *, arg):
@@ -47,9 +51,12 @@ async def on_message(message):
     ctx = await client.get_context(message)
     await client.invoke(ctx)
 
-@client.command(name="kill", description="Kills the bot. Admin only.")
+@client.command(
+    name="kill",
+    description="Kills the bot. Admin only."
+    )
 @is_admin()
-async def kill(ctx):
+async def kill(ctx: CTX) -> None:
     print(f"!kill command sent by admin {ctx.message.author.name}.")
     await client.logout()
 

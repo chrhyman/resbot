@@ -1,5 +1,5 @@
 # for this repo
-privdata.py
+private_data.py
 .DS_Store
 
 # github python .gitignore template below
