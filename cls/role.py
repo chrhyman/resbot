@@ -1,92 +1,87 @@
-from abc import ABC
+from dataclasses import dataclass
 
-class Role(ABC):
-    '''Base class for all Roles'''
+@dataclass
+class Role:
+    '''Base class for all Roles. Defaults all flags to False.'''
+    role: str
+
+    # flags for each team
+    is_res: bool = False
+    is_spy: bool = False
+
+    # flags for special roles
+    is_leader: bool = False
+    is_shooter: bool = False
+    is_hidden: bool = False
+    is_blind: bool = False
+    is_perceptive: bool = False
+
     def __str__(self):
         return self.role
 
-    def is_res(self):
-        return isinstance(self, Res)
-
-    def is_spy(self):
-        return isinstance(self, Spy)
-
-    def is_leader(self):
-        return isinstance(self, Leader)
-
-    def is_shooter(self):
-        return isinstance(self, Shooter)
-
-    def is_hidden(self):
-        return isinstance(self, Hidden)
-
-    def is_blind(self):
-        return isinstance(self, Blind)
-
-    def is_percival(self):
-        return isinstance(self, Percival)
-
-    def is_merlin(self):
-        return isinstance(self, Merlin)
-
-class Leader(Role):
-    '''Visible to Percival'''
-    pass
-
-class Res(Role):
-    pass
-
-class VanRes(Res):
+class VanillaRes(Role):
     def __init__(self):
-        self.role = 'a member of the RESISTANCE'
+        super().__init__(
+            role='a member of the RESISTANCE',
+            is_res=True)
+        self.plural = "members of the RESISTANCE"
+        self.team = "the RESISTANCE"
 
-class Merlin(Res, Leader):
-    '''Can see all (non-Hidden; i.e. Mordred) Spies'''
+class Merlin(Role):
     def __init__(self):
-        self.role = 'Merlin'
+        super().__init__(
+            role='Merlin',
+            is_res=True,
+            is_leader=True)
 
-class Percival(Res):
-    '''Can identify Leader(s), one of whom is Merlin'''
+class Percival(Role):
     def __init__(self):
-        self.role = 'Percival'
+        super().__init__(
+            role='Percival',
+            is_res=True,
+            is_perceptive=True)
 
-class Spy(Role):
-    '''Can see all (non-Blind; i.e. Oberon) Spies'''
-    pass
-
-class VanSpy(Spy):
+class VanillaSpy(Role):
     def __init__(self):
-        self.role = 'a SPY'
+        super().__init__(
+            role='a SPY',
+            is_spy=True)
+        self.plural = "SPIES"
+        self.team = "the SPIES"
 
-class Shooter(Spy):
-    '''Can attempt to shoot Merlin at the end of the game'''
-    pass
-
-class Assassin(Shooter):
+class Assassin(Role):
     def __init__(self):
-        self.role = 'Assassin'
+        super().__init__(
+            role='Assassin',
+            is_spy=True,
+            is_shooter=True)
 
-class Morgana(Spy, Leader):
-    '''Looks like Merlin (i.e. one of two Leaders) to Percival'''
+class Morgana(Role):
     def __init__(self):
-        self.role = 'Morgana'
+        super().__init__(
+            role='Morgana',
+            is_spy=True,
+            is_leader=True)
 
-class Hidden(Spy):
-    '''Cannot be seen by Merlin'''
-    pass
-
-class Mordred(Hidden):
+class Mordred(Role):
     def __init__(self):
-        self.role = 'Mordred'
+        super().__init__(
+            role='Mordred',
+            is_spy=True,
+            is_hidden=True)
 
-class MordredAssassin(Hidden, Shooter):
+class MordredAssassin(Role):
+    '''Used when there are too few spies to separate Mordred and Assassin'''
     def __init__(self):
-        self.role = 'Mordred the Assassin'
+        super().__init__(
+            role='Mordred the Assassin',
+            is_spy=True,
+            is_hidden=True,
+            is_shooter=True)
 
-class Blind(Spy):
-    '''Cannot see or be seen by other Spies (but still visible to Merlin)'''
-    pass
-
-class Oberon(Blind):
+class Oberon(Role):
     def __init__(self):
-        self.role = 'Oberon'
+        super().__init__(
+            role='Oberon',
+            is_spy=True,
+            is_blind=True)
