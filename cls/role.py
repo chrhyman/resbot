@@ -1,6 +1,6 @@
-import txt.roles as R
+from abc import ABC
 
-class Role:
+class Role(ABC):
     '''Base class for all Roles'''
     def __str__(self):
         return self.role
@@ -38,17 +38,17 @@ class Res(Role):
 
 class VanRes(Res):
     def __init__(self):
-        self.role = R.VANRES
+        self.role = 'a member of the RESISTANCE'
 
 class Merlin(Res, Leader):
     '''Can see all (non-Hidden; i.e. Mordred) Spies'''
     def __init__(self):
-        self.role = R.MERLIN
+        self.role = 'Merlin'
 
 class Percival(Res):
     '''Can identify Leader(s), one of whom is Merlin'''
     def __init__(self):
-        self.role = R.PERCIVAL
+        self.role = 'Percival'
 
 class Spy(Role):
     '''Can see all (non-Blind; i.e. Oberon) Spies'''
@@ -56,7 +56,7 @@ class Spy(Role):
 
 class VanSpy(Spy):
     def __init__(self):
-        self.role = R.VANSPY
+        self.role = 'a SPY'
 
 class Shooter(Spy):
     '''Can attempt to shoot Merlin at the end of the game'''
@@ -64,12 +64,12 @@ class Shooter(Spy):
 
 class Assassin(Shooter):
     def __init__(self):
-        self.role = R.ASSASSIN
+        self.role = 'Assassin'
 
 class Morgana(Spy, Leader):
     '''Looks like Merlin (i.e. one of two Leaders) to Percival'''
     def __init__(self):
-        self.role = R.MORGANA
+        self.role = 'Morgana'
 
 class Hidden(Spy):
     '''Cannot be seen by Merlin'''
@@ -77,11 +77,11 @@ class Hidden(Spy):
 
 class Mordred(Hidden):
     def __init__(self):
-        self.role = R.MORDRED
+        self.role = 'Mordred'
 
-class MordAss(Hidden, Shooter):
+class MordredAssassin(Hidden, Shooter):
     def __init__(self):
-        self.role = R.MORDASS
+        self.role = 'Mordred the Assassin'
 
 class Blind(Spy):
     '''Cannot see or be seen by other Spies (but still visible to Merlin)'''
@@ -89,4 +89,4 @@ class Blind(Spy):
 
 class Oberon(Blind):
     def __init__(self):
-        self.role = R.OBERON
+        self.role = 'Oberon'
